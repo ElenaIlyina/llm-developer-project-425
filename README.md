@@ -1,35 +1,100 @@
 # AI-агент службы поддержки
 
-
 [![hexlet-check](https://github.com/ElenaIlyina/llm-developer-project-425/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/ElenaIlyina/llm-developer-project-425/actions)
 
-Соберите Help Desk-агента на Yandex AI Studio: почтовый агент (IMAP/SMTP) принимает
-обращения сотрудников, ищет ответ в корпоративной базе знаний (RAG) и при необходимости
-заводит тикет и сохраняет переписку в YDB Serverless. По пути освоите агента в AI Studio
-(Responses API), собственный MCP-инструмент, workflow по расписанию, RAG, защиту от
-prompt injection и PII-утечек, а также наблюдаемость (трейсы и токены). Решение
-разворачивается в вашем аккаунте Yandex Cloud (Cloud Functions, Workflows, MCP Hub,
-Lockbox). Сдача — репозиторий с конфигами и рабочий почтовый агент.
+Учебный Help Desk на Yandex Cloud: ответы по демонстрационной базе знаний,
+тикеты в YDB и ежедневная эскалация оператору.
 
-Учебный проект Хекслета: https://ru.hexlet.io/programs/llm-developer
-Как это должно работать: 
+## Проверка проекта
 
-## Стек
+- Почта: **helpdesk-elena-project@yandex.ru**. Поллер проверяет непрочитанные письма раз в минуту: ожидание до 60 секунд плюс обработка моделью и доставка SMTP.
+- [Репозиторий с конфигурациями](https://github.com/ElenaIlyina/llm-developer-project-425).
+- [Агент в AI Studio](https://aistudio.yandex.ru/platform/folders/b1gu1oe70uop37it489m/runtime-agents/aac7c230uu7tlo9vhck0) — доступ зависит от прав на каталог. Почтовый обработчик вызывает Responses API с системным промптом из репозитория.
+- [Подтверждения запусков и письма](docs/evidence/README.md); [финальный QA, токены и стоимость](docs/qa.md).
 
-- Разное
+### Что попробовать
 
-## Установка
+1. «У меня сломался принтер, что делать?»
+2. Ответом в той же переписке: «Не помогло, создай тикет категории bug».
+3. «Покажи мои тикеты».
+4. «Какова точная сумма компенсации за занятия скалолазанием?» — информации в учебной базе нет; агент предлагает создать тикет и ждёт согласия.
 
-<!-- Опишите установку: клонирование, зависимости, переменные окружения -->
+Не отправляйте настоящие персональные данные: это учебная система.
 
-```bash
-git clone https://github.com/ElenaIlyina/llm-developer-project-425.git
-cd llm-developer-project-425
+## Архитектура
+
+```mermaid
+flowchart TD
+    Mail[Входящее письмо IMAP] --> Poller[Cloud Function email-poller]
+    Timer[Таймер раз в минуту] --> Poller
+    Poller --> Guard[Regex и классификатор]
+    Guard --> API[Responses API / YandexGPT]
+    API --> RAG[file_search / 8 учебных документов]
+    API --> MCP[Приватный MCP Hub / dispatch]
+    MCP --> Tickets[Cloud Function ydb-tickets]
+    Tickets --> Mask[Маскирование PII]
+    Poller --> Mask
+    Mask --> DB[(YDB: tickets и messages)]
+    Poller --> SMTP[Ответ по SMTP]
+    Schedule[Ежедневно 09:00 Москва] --> WF[Workflow daily-escalation]
+    WF --> DB
+    WF --> Model[foundationModelsCall: дайджест]
+    Model --> Sender[Cloud Function email-sender]
+    Sender --> Operator[Письмо оператору]
 ```
 
-## Использование
+Поллер сохраняет переписку и метрики `tokens_in`, `tokens_out`, `latency_ms`
+в YDB. MCP вызывает функцию тикетов; созданный ticket_id связывается с двумя
+репликами текущего цикла. Тексты перед записью маскируются. Workflow формирует
+дайджест просроченных заявок и переводит их в `escalated`.
 
-<!-- Добавьте примеры запуска и запись asciinema — именно это смотрит работодатель -->
+## Состояние
+
+| Возможность | Подтверждение / ограничение |
+| --- | --- |
+| Почта, создание и просмотр тикетов, история | Проверены реальными письмами и чтением YDB |
+| RAG: известный и неизвестный вопрос | Проверены API и почтой; 8 демонстрационных документов |
+| Эскалация | Дайджест доставлен, статус escalated подтверждён; повтор не отправляет тот же тикет |
+| Injection и PII | Проверены классификатор, блокировка инструмента и маски в YDB |
+| Логи платформы | CLI/UI недоступны в ограниченном режиме; отсутствие PII в облачных логах не подтверждено |
+| Токены и история | usage точно совпадает с YDB; реплики создания связаны с настоящим тикетом |
+
+По согласованию с преподавателем `aiStudioAgent` заменён на `foundationModelsCall`:
+ID нового runtime-агента несовместим с ожидаемым `promptTemplateId`.
+Дайджест получает системный промпт прямо в workflow; ID агента шага 3 не нужен.
+Дайджест отправляется ежедневно в 09:00 Europe/Moscow.
+
+## Локальная работа
+
+Python 3.12, Yandex Cloud CLI и настроенный профиль нужного каталога:
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements-dev.txt
+pip install -r requirements-rag.txt
+yc init
+python -m unittest discover -s tests -v
+```
+
+При первом запуске создайте `.env` по `.env.example`; существующий файл сохраняйте.
+Пароли приложений и параметры YDB хранятся в Lockbox, функции получают IAM через
+metadata service. Секреты, токены и `.env` не коммитятся.
+
+- `src/`: поллер, инструменты тикетов, RAG, защита и SMTP-отправка.
+- `prompts/`, `config/`, `schemas/`: промпты, тарифы для оценки и JSON-схема YaWL.
+- `knowledge-base/`: учебные HR/IT-документы; `tests/`: локальные проверки.
+- `scripts/`: настройка, деплой и диагностические команды.
+- `docs/`: инструкции и подтверждения проверок.
+
+Развёртывание: [почта](docs/email-workflow.md), [MCP и YDB](docs/tickets-and-history.md),
+[эскалация](docs/daily-escalation.md), [RAG](docs/rag.md), [защита](docs/security.md).
+Почта публично принимает обращения; облачные инструменты требуют авторизации.
+Ограничения: адрес From не подтверждает корпоративную личность; отдельного ACL
+сотрудников нет. Проверка согласия действует в почтовом маршруте. Полный отказ YDB
+на изолированном облачном ресурсе не проверен; отдельные UI-фильтры модерации не подтверждены.
+При сбое классификатора используется fail-open, regex остаётся активным.
+Подробнее: [защита](docs/security.md) и [чек-лист сдачи](docs/submission.md).
 
 ---
 
@@ -39,7 +104,3 @@ cd llm-developer-project-425
 Тесты запускаются на каждый коммит. За запуск отвечает файл `.github/workflows/hexlet-check.yml` — не удаляйте и не переименовывайте ни его, ни репозиторий.
 
 </details>
-
-## О Хекслете
-
-[Хекслет](https://ru.hexlet.io/) — школа программирования: авторские программы обучения с практикой, поддержкой наставников и реальными проектами, которые остаются в резюме. Этот репозиторий — один из таких проектов.

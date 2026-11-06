@@ -1,0 +1,19 @@
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Python environments and generated files
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local tools
+.tools/
+
+# Original console screenshot includes account balance; do not publish.
+docs/evidence/logging-unavailable-original.png
+
+# Previous QA runs are local diagnostics; publish only qa-live.json.
+docs/evidence/qa-live-*.json

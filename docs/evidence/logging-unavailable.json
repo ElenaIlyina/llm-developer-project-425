@@ -1,0 +1,8 @@
+{
+  "source": "User-reported message shown by Yandex Cloud logs UI",
+  "message": "internal error\nРаздел недоступен\nВ связи с ограниченным режимом работы платформы функциональность этого раздела недоступна.",
+  "consequence": "Cloud Function log inspection is blocked by platform restrictions; absence of PII in logs is not verified.",
+  "screenshot_verified": true,
+  "screenshot_local_only": "docs/evidence/logging-unavailable-original.png",
+  "publication_note": "Original screenshot includes account balance and is excluded from Git. Provide a copy with the top account panel removed for submission."
+}

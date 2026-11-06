@@ -1,0 +1,67 @@
+{
+  "execution": {
+    "id": "dfqcg7luvnnfbou3ehgm-89dadae1-2adf-480e-9a5f-0e9bfc137833",
+    "workflow_id": "dfqcg7luvnnfbou3ehgm",
+    "status": "FINISHED",
+    "started_at": "2026-11-05T20:00:22.998875303Z",
+    "duration": "5.121034908s"
+  },
+  "entries": [
+    {
+      "id": "select_overdue",
+      "started_at": "2026-11-05T20:00:23.086248863Z",
+      "duration": "1.309840906s",
+      "input": {
+        "input_json": "{\"input\": {}}"
+      },
+      "output": {
+        "output_json": "{\"tickets\":[{\"category\":\"bug\",\"created_at\":\"2026-11-03T20:42:14.337428Z\",\"id\":\"3903c8f8-c727-4711-9ffa-84d79b9b8bd8\",\"status\":\"open\",\"text\":\"не работает принтер в переговорной\"}]}"
+      },
+      "status": "COMPLETED",
+      "type": "DatabaseQuery",
+      "attempts": "1"
+    },
+    {
+      "id": "compose_digest",
+      "started_at": "2026-11-05T20:00:24.476261744Z",
+      "duration": "1.202826755s",
+      "input": {
+        "input_json": "{\"input\":{},\"tickets\":[{\"category\":\"bug\",\"created_at\":\"2026-11-03T20:42:14.337428Z\",\"id\":\"3903c8f8-c727-4711-9ffa-84d79b9b8bd8\",\"status\":\"open\",\"text\":\"не работает принтер в переговорной\"}]}"
+      },
+      "output": {
+        "output_json": "{\"digest\":\"Просроченная заявка: 1\\n\\nID: 3903c8f8-c727-4711-9ffa-84d79b9b8bd8\\nКатегория: bug\\nДата создания: 2026-11-03\\nСуть проблемы: не работает принтер в переговорной.\",\"model_usage\":{\"completionTokens\":\"75\",\"inputTextTokens\":\"227\",\"totalTokens\":\"302\"}}"
+      },
+      "status": "COMPLETED",
+      "type": "FoundationModelsCall",
+      "attempts": "1"
+    },
+    {
+      "id": "mark_escalated",
+      "started_at": "2026-11-05T20:00:25.763118700Z",
+      "duration": "1.500055074s",
+      "input": {
+        "input_json": "{\"digest\":\"Просроченная заявка: 1\\n\\nID: 3903c8f8-c727-4711-9ffa-84d79b9b8bd8\\nКатегория: bug\\nДата создания: 2026-11-03\\nСуть проблемы: не работает принтер в переговорной.\",\"input\":{},\"model_usage\":{\"completionTokens\":\"75\",\"inputTextTokens\":\"227\",\"totalTokens\":\"302\"},\"tickets\":[{\"category\":\"bug\",\"created_at\":\"2026-11-03T20:42:14.337428Z\",\"id\":\"3903c8f8-c727-4711-9ffa-84d79b9b8bd8\",\"status\":\"open\",\"text\":\"не работает принтер в переговорной\"}]}"
+      },
+      "output": {
+        "output_json": "{\"marked\":true}"
+      },
+      "status": "COMPLETED",
+      "type": "DatabaseQuery",
+      "attempts": "1"
+    },
+    {
+      "id": "send_digest",
+      "started_at": "2026-11-05T20:00:27.344747527Z",
+      "duration": "0.696842918s",
+      "input": {
+        "input_json": "{\"digest\":\"Просроченная заявка: 1\\n\\nID: 3903c8f8-c727-4711-9ffa-84d79b9b8bd8\\nКатегория: bug\\nДата создания: 2026-11-03\\nСуть проблемы: не работает принтер в переговорной.\",\"input\":{},\"marked\":true,\"model_usage\":{\"completionTokens\":\"75\",\"inputTextTokens\":\"227\",\"totalTokens\":\"302\"},\"tickets\":[{\"category\":\"bug\",\"created_at\":\"2026-11-03T20:42:14.337428Z\",\"id\":\"3903c8f8-c727-4711-9ffa-84d79b9b8bd8\",\"status\":\"open\",\"text\":\"не работает принтер в переговорной\"}]}"
+      },
+      "output": {
+        "output_json": "{\"sent\":true}"
+      },
+      "status": "COMPLETED",
+      "type": "HttpCall",
+      "attempts": "1"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "known": {
+    "question": "Как оформить командировку по учебному регламенту?",
+    "text": "По учебному регламенту для оформления командировки выполните следующие шаги:\n\n1. Не позднее чем за 5 рабочих дней до выезда направьте руководителю цель, даты, город и предварительный бюджет поездки.\n2. Получите согласование руководителя, затем передайте заявку административному координатору.\n3. Дождитесь подтверждения бронирования. До подтверждения не покупайте билеты самостоятельно.\n4. После возвращения в течение 3 рабочих дней передайте координатору билеты, чеки и краткий отчёт.\n\nДокумент: business-travel.md\n\nИсточники (учебная база):\nКомандировки — учебный регламент — https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/business-travel.md",
+    "ticket_id": null,
+    "model": "gpt://b1gu1oe70uop37it489m/yandexgpt/latest",
+    "tokens_in": 892,
+    "tokens_out": 122,
+    "latency_ms": 2250,
+    "searches": [
+      {
+        "id": "9bdf6c19-0ee4-40f5-b808-9d7527df707d",
+        "status": "completed",
+        "queries": [
+          "Как оформить командировку по учебному регламенту?"
+        ],
+        "results": [
+          {
+            "file_id": "fvtgan1dn60cjv6hge4p",
+            "filename": "business-travel.md",
+            "score": 1.0
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "filename": "business-travel.md",
+        "file_id": "fvtgan1dn60cjv6hge4p",
+        "title": "Командировки — учебный регламент",
+        "url": "https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/business-travel.md"
+      }
+    ]
+  },
+  "unknown": {
+    "question": "Какова точная сумма учебной корпоративной компенсации за занятия скалолазанием?",
+    "text": "Не знаю: в базе знаний нет этой информации. Хотите создать заявку для уточнения?",
+    "ticket_id": null,
+    "model": "gpt://b1gu1oe70uop37it489m/yandexgpt/latest",
+    "tokens_in": 896,
+    "tokens_out": 39,
+    "latency_ms": 1439,
+    "searches": [
+      {
+        "id": "5e4e514b-6c2f-435f-a17e-503425b5dd16",
+        "status": "completed",
+        "queries": [
+          "учебная корпоративная компенсация за занятия скалолазанием"
+        ],
+        "results": [
+          {
+            "file_id": "fvthaa9rbgadj3t5ukjg",
+            "filename": "vacation.md",
+            "score": 0.7642519
+          },
+          {
+            "file_id": "fvtgan1dn60cjv6hge4p",
+            "filename": "business-travel.md",
+            "score": 0.6301636
+          },
+          {
+            "file_id": "fvts8g18d2mg6nc2fcuo",
+            "filename": "meeting-rooms.md",
+            "score": 0.5619452
+          },
+          {
+            "file_id": "fvt7lhmabdhg43l3ioeu",
+            "filename": "equipment.md",
+            "score": 0.5
+          }
+        ]
+      }
+    ],
+    "sources": []
+  }
+}

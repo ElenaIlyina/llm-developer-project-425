@@ -1,0 +1,34 @@
+{
+  "business-travel.md": {
+    "title": "Командировки — учебный регламент",
+    "url": "https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/business-travel.md"
+  },
+  "vacation.md": {
+    "title": "Отпуск — учебная процедура",
+    "url": "https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/vacation.md"
+  },
+  "onboarding.md": {
+    "title": "Первый рабочий день — учебный чек-лист",
+    "url": "https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/onboarding.md"
+  },
+  "account-access.md": {
+    "title": "Доступ к системам — учебная инструкция",
+    "url": "https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/account-access.md"
+  },
+  "vpn.md": {
+    "title": "Удалённая работа и VPN — учебная инструкция",
+    "url": "https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/vpn.md"
+  },
+  "printer.md": {
+    "title": "Принтеры — учебная инструкция",
+    "url": "https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/printer.md"
+  },
+  "equipment.md": {
+    "title": "Заказ оборудования — учебный порядок",
+    "url": "https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/equipment.md"
+  },
+  "meeting-rooms.md": {
+    "title": "Переговорные — учебная инструкция",
+    "url": "https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/meeting-rooms.md"
+  }
+}

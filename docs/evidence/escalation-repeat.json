@@ -1,0 +1,25 @@
+{
+  "execution": {
+    "id": "dfqcg7luvnnfbou3ehgm-22448463-c9eb-4198-a88e-e12da2a56fd4",
+    "workflow_id": "dfqcg7luvnnfbou3ehgm",
+    "status": "FINISHED",
+    "started_at": "2026-11-05T20:02:47.862642082Z",
+    "duration": "2.383076775s"
+  },
+  "entries": [
+    {
+      "id": "select_overdue",
+      "started_at": "2026-11-05T20:02:47.985646468Z",
+      "duration": "2.145112204s",
+      "input": {
+        "input_json": "{\"input\": {}}"
+      },
+      "output": {
+        "output_json": "{\"tickets\":[]}"
+      },
+      "status": "COMPLETED",
+      "type": "DatabaseQuery",
+      "attempts": "1"
+    }
+  ]
+}

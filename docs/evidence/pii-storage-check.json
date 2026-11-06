@@ -1,0 +1,40 @@
+{
+  "ticket": {
+    "id": "c7e55353-75ff-46ab-b991-831065ced57e",
+    "category": "bug",
+    "status": "open",
+    "text": "Тестовый принтер не печатает."
+  },
+  "messages": [
+    {
+      "role": "user",
+      "text": "Создай заявку категории bug: тестовый принтер не печатает.\nВключи в текст заявки тестовые данные:\nтелефон +7 (***) ***-**-12,\nemail [email],\nкарта ****-****-****-****."
+    },
+    {
+      "role": "agent",
+      "text": "Тикет с идентификатором c7e55353-75ff-46ab-b991-831065ced57e успешно создан."
+    }
+  ],
+  "storage_checks": {
+    "user_messages_have_all_masks": true,
+    "ticket_has_no_raw_test_data": true,
+    "messages_have_no_raw_test_data": true,
+    "both_roles_linked": true,
+    "direct_ticket_has_all_masks": true,
+    "direct_ticket_has_no_raw_test_data": true
+  },
+  "logs": {
+    "ydb-tickets": {
+      "available": false
+    },
+    "email-poller": {
+      "available": false
+    }
+  },
+  "ticket_boundary_checked": true,
+  "direct_ticket": {
+    "id": "65868d9e-2a51-492d-afaa-cedfff85f34a",
+    "text": "Тестовый принтер не печатает. Телефон +7 (***) ***-**-12, email [email], карта ****-****-****-****."
+  },
+  "storage_passed": true
+}

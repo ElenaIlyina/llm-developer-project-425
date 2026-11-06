@@ -1,0 +1,237 @@
+{
+  "export_scope": "One requested user; latest 500 messages and 20 tickets; user_id omitted",
+  "summary": {
+    "message_rows": 12,
+    "generation_responses": 6,
+    "guardrail_responses": 0,
+    "tokens_in": 6847,
+    "tokens_out": 499,
+    "average_latency_ms": 4088.0
+  },
+  "messages": [
+    {
+      "id": "74c10fe2-e4c6-506f-aa00-4df61613ddff",
+      "role": "user",
+      "ticket_id": "3903c8f8-c727-4711-9ffa-84d79b9b8bd8",
+      "text": "Создай тикет категория bug текст: не работает принтер в переговорной.",
+      "model": null,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "latency_ms": 0,
+      "created_at": "2026-11-03T20:42:10.658982Z"
+    },
+    {
+      "id": "2b34fc48-07f4-57fa-ae4b-46fec973ab81",
+      "role": "agent",
+      "ticket_id": "3903c8f8-c727-4711-9ffa-84d79b9b8bd8",
+      "text": "Тикет с идентификатором 3903c8f8-c727-4711-9ffa-84d79b9b8bd8 успешно создан.",
+      "model": "gpt://b1gu1oe70uop37it489m/yandexgpt/latest",
+      "tokens_in": 570,
+      "tokens_out": 82,
+      "latency_ms": 5323,
+      "created_at": "2026-11-03T20:42:16.039197Z"
+    },
+    {
+      "id": "41f5f81e-03a1-5835-9de9-3b8b9e885d98",
+      "role": "user",
+      "ticket_id": null,
+      "text": "Покажи мои заявки.\n \n \n----------------\nКому: [EMAIL] ([EMAIL]);\nТема: создать тикет;\n03.11.2026, 20:42, \"[EMAIL]\" <[EMAIL]>:\nТикет с идентификатором 3903c8f8-c727-4711-9ffa-84d79b9b8bd8 успешно создан.",
+      "model": null,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "latency_ms": 0,
+      "created_at": "2026-11-03T20:44:24.404092Z"
+    },
+    {
+      "id": "78eb3d9e-f377-5793-9faf-b66a860308ca",
+      "role": "agent",
+      "ticket_id": null,
+      "text": "Ваш текущий тикет:\n- ID: 3903c8f8-c727-4711-9ffa-84d79b9b8bd8\n- Статус: открыт\n- Категория: bug\n- Текст: не работает принтер в переговорной\n- Дата создания: +7 (***) ***-**-20:42:14",
+      "model": "gpt://b1gu1oe70uop37it489m/yandexgpt/latest",
+      "tokens_in": 719,
+      "tokens_out": 117,
+      "latency_ms": 4026,
+      "created_at": "2026-11-03T20:44:28.492129Z"
+    },
+    {
+      "id": "e06f5500-9c17-5555-a5bd-2ccf6dba68bd",
+      "role": "user",
+      "ticket_id": null,
+      "text": "Как оформить командировку по учебному регламенту?",
+      "model": null,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "latency_ms": 0,
+      "created_at": "2026-11-05T21:20:41.292504Z"
+    },
+    {
+      "id": "f3d78c14-121f-543b-94d2-8b2e06dcff9e",
+      "role": "agent",
+      "ticket_id": null,
+      "text": "По учебному регламенту для оформления командировки:\n\n1. Не позднее чем за 5 рабочих дней до выезда направьте руководителю цель, даты, город и предварительный бюджет поездки.\n2. Получите согласование руководителя, затем передайте заявку административному координатору.\n3. Дождитесь подтверждения бронирования. До подтверждения не покупайте билеты самостоятельно.\n4. После возвращения в течение 3 рабочих дней передайте координатору билеты, чеки и краткий отчёт.\n\nДокумент: business-travel.md\n\nИсточники (учебная база):\nКомандировки — учебный регламент — https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/business-travel.md",
+      "model": "gpt://b1gu1oe70uop37it489m/yandexgpt/latest",
+      "tokens_in": 1156,
+      "tokens_out": 116,
+      "latency_ms": 2382,
+      "created_at": "2026-11-05T21:20:43.732668Z"
+    },
+    {
+      "id": "008c15f8-63d4-54f0-a7cd-a8073fef6f32",
+      "role": "user",
+      "ticket_id": null,
+      "text": "Какова точная сумма компенсации за занятия скалолазанием?",
+      "model": null,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "latency_ms": 0,
+      "created_at": "2026-11-05T21:23:11.748409Z"
+    },
+    {
+      "id": "3f430fdc-c397-5adc-8130-d6ee1bbce51c",
+      "role": "agent",
+      "ticket_id": null,
+      "text": "Не знаю: в базе знаний нет этой информации. Хотите создать тикет, чтобы уточнить этот вопрос?",
+      "model": "gpt://b1gu1oe70uop37it489m/yandexgpt/latest",
+      "tokens_in": 1326,
+      "tokens_out": 20,
+      "latency_ms": 1128,
+      "created_at": "2026-11-05T21:23:12.941110Z"
+    },
+    {
+      "id": "0b771d79-73e5-5c17-a22c-8aa9bb7d0cf9",
+      "role": "user",
+      "ticket_id": "8ec4719e-9b91-4632-aba1-79d67f7dfaab",
+      "text": "Да, создай заявку категории docs по этому вопросу.\n\n\n\n\n----------------\n                        \nКому: [EMAIL] ([EMAIL]);\n\n                        \n                        \nТема: Проверка RAG — вопрос вне базы;\n\n                        \n05.11.2026, 21:23, \"[EMAIL]\" <[EMAIL]>:\n\n                        \nНе знаю: в базе знаний нет этой информации. Хотите создать тикет, чтобы уточнить этот вопрос?",
+      "model": null,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "latency_ms": 0,
+      "created_at": "2026-11-05T21:25:42.199916Z"
+    },
+    {
+      "id": "d25a5ba9-74a5-513c-8cd4-6425c9c0c67f",
+      "role": "agent",
+      "ticket_id": "8ec4719e-9b91-4632-aba1-79d67f7dfaab",
+      "text": "Тикет с идентификатором 8ec4719e-9b91-4632-aba1-79d67f7dfaab успешно создан.",
+      "model": "gpt://b1gu1oe70uop37it489m/yandexgpt/latest",
+      "tokens_in": 1459,
+      "tokens_out": 84,
+      "latency_ms": 5888,
+      "created_at": "2026-11-05T21:25:48.140313Z"
+    },
+    {
+      "id": "61db6ae7-2c34-5aa4-8957-4ea978d1f504",
+      "role": "user",
+      "ticket_id": "c7e55353-75ff-46ab-b991-831065ced57e",
+      "text": "Создай заявку категории bug: тестовый принтер не печатает.\nВключи в текст заявки тестовые данные:\nтелефон +7 (***) ***-**-12,\nemail [email],\nкарта ****-****-****-****.",
+      "model": null,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "latency_ms": 0,
+      "created_at": "2026-11-05T21:48:35.403385Z"
+    },
+    {
+      "id": "dcca888d-ecba-5b77-9286-dca8e5d02de3",
+      "role": "agent",
+      "ticket_id": "c7e55353-75ff-46ab-b991-831065ced57e",
+      "text": "Тикет с идентификатором c7e55353-75ff-46ab-b991-831065ced57e успешно создан.",
+      "model": "gpt://b1gu1oe70uop37it489m/yandexgpt/latest",
+      "tokens_in": 1617,
+      "tokens_out": 80,
+      "latency_ms": 5781,
+      "created_at": "2026-11-05T21:48:41.406741Z"
+    }
+  ],
+  "tickets": [
+    {
+      "id": "65868d9e-2a51-492d-afaa-cedfff85f34a",
+      "status": "open",
+      "category": "bug",
+      "text": "Тестовый принтер не печатает. Телефон +7 (***) ***-**-12, email [email], карта ****-****-****-****.",
+      "created_at": "2026-11-05T21:56:22.086027Z"
+    },
+    {
+      "id": "c7e55353-75ff-46ab-b991-831065ced57e",
+      "status": "open",
+      "category": "bug",
+      "text": "Тестовый принтер не печатает.",
+      "created_at": "2026-11-05T21:48:40.135179Z"
+    },
+    {
+      "id": "8ec4719e-9b91-4632-aba1-79d67f7dfaab",
+      "status": "open",
+      "category": "docs",
+      "text": "Какова точная сумма компенсации за занятия скалолазанием?",
+      "created_at": "2026-11-05T21:25:46.629641Z"
+    },
+    {
+      "id": "3903c8f8-c727-4711-9ffa-84d79b9b8bd8",
+      "status": "escalated",
+      "category": "bug",
+      "text": "не работает принтер в переговорной",
+      "created_at": "2026-11-03T20:42:14.337428Z"
+    }
+  ],
+  "historical_usage_compared_to_api": false,
+  "historical_usage_note": "Cloud logs unavailable; exact API comparison is in qa-live.json",
+  "monthly_scenario": {
+    "assumptions": {
+      "messages": 300,
+      "days": 30,
+      "ticket_fraction": 0.25,
+      "one_search_per_message": true,
+      "classifier_tokens_per_call": 1000,
+      "index_billed_gib": 1,
+      "secret_versions": 3,
+      "empty_poller_seconds": 1,
+      "busy_poller_seconds": 10,
+      "daily_digest_generation_not_included": true
+    },
+    "poller_calls": 43200,
+    "known_components_rub": {
+      "generation": 440.76,
+      "file_search": 90.0,
+      "classifier": 57.1875,
+      "index_storage": 318.0,
+      "three_secret_versions": 59.184
+    },
+    "functions_rub_if_allowance_available": 0.0,
+    "functions_rub_if_allowance_exhausted": 21.5845,
+    "known_subtotal_with_available_allowance_rub": 965.1315,
+    "known_subtotal_with_exhausted_allowance_rub": 986.716,
+    "excluded": [
+      "tool tokens absent from historical YDB rows",
+      "YDB RU and storage",
+      "Lockbox payload reads",
+      "network egress",
+      "Cloud Logging",
+      "daily digest model tokens",
+      "one-time indexing",
+      "retries and additional tool calls"
+    ],
+    "is_total_invoice": false
+  },
+  "rates": {
+    "checked_on": "2026-11-06",
+    "currency": "RUB",
+    "vat_included": true,
+    "model": "YandexGPT Pro 5",
+    "model_alias": "yandexgpt/latest",
+    "generation_input_per_1000": 1.2,
+    "generation_output_per_1000": 1.2,
+    "classifier_lite_per_started_1000": 0.1525,
+    "file_search_per_1000_calls": 300,
+    "index_per_rounded_gib_day": 10.6,
+    "secret_version_per_hour": 0.0274,
+    "functions_per_gib_hour": 6.48,
+    "functions_per_million_calls": 18.97,
+    "functions_free_gib_hours": 10,
+    "functions_free_calls": 1000000,
+    "sources": [
+      "https://aistudio.yandex.ru/ru/docs/ai-studio/pricing",
+      "https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/generation/models",
+      "https://yandex.cloud/ru/docs/lockbox/pricing",
+      "https://yandex.cloud/ru/docs/functions/pricing"
+    ]
+  }
+}

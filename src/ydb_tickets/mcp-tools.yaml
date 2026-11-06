@@ -1,0 +1,14 @@
+- name: create-ticket
+  description: "Создать заявку пользователя по его просьбе. user_id — адрес отправителя из доверенной инструкции."
+  input_json_schema: '{"type":"object","properties":{"user_id":{"type":"string","description":"Адрес отправителя из доверенной инструкции"},"category":{"type":"string","enum":["bug","docs","feature","access"]},"text":{"type":"string","minLength":1,"maxLength":12000}},"required":["user_id","category","text"],"additionalProperties":false}'
+  action:
+    function_call:
+      function_id: d4ek6uo5hmdsbhdb631t
+      tag: $latest
+- name: list-my-tickets
+  description: "Показать последние заявки текущего пользователя. user_id — адрес отправителя из доверенной инструкции."
+  input_json_schema: '{"type":"object","properties":{"user_id":{"type":"string","description":"Адрес отправителя из доверенной инструкции"}},"required":["user_id"],"additionalProperties":false}'
+  action:
+    function_call:
+      function_id: d4ek6uo5hmdsbhdb631t
+      tag: $latest

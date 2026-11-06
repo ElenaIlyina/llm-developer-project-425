@@ -1,0 +1,15 @@
+{
+  "verification_method": "User-provided yc deployment output",
+  "ydb_tickets": {
+    "version_id": "d4e5qugau8d052mcfbmd",
+    "status": "ACTIVE",
+    "timeout_seconds": 45
+  },
+  "email_poller": {
+    "version_id": "d4eb5jmdvovn349ula04",
+    "status": "ACTIVE",
+    "search_index_id": "fvtapdrpmqeaq7j770eb"
+  },
+  "trigger_status": "ACTIVE",
+  "guardrail_fail_open": true
+}

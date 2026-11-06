@@ -1,0 +1,39 @@
+{
+  "index_id": "fvtapdrpmqeaq7j770eb",
+  "name": "help-desk-kb",
+  "folder_id": "b1gu1oe70uop37it489m",
+  "files": [
+    {
+      "filename": "account-access.md",
+      "sha256": "e6287af9f73b2046d9ebe73743bc8460179894c39b45e870b8fd4d9343f07f82"
+    },
+    {
+      "filename": "business-travel.md",
+      "sha256": "3e8479ee764b7891e851fdb6e47412fe0fa7a63e5a989ca05f71f4e9010d4b52"
+    },
+    {
+      "filename": "equipment.md",
+      "sha256": "bb9413621673f427eff279c4c0dd9841e6beec3d6e50508e7ce2540ac15c5052"
+    },
+    {
+      "filename": "meeting-rooms.md",
+      "sha256": "6203c6b310b08597202a75314774131feaf1a05d0507fb631318bff2ebda002a"
+    },
+    {
+      "filename": "onboarding.md",
+      "sha256": "006595397bc295ae448d23995dc9afbdaa4ac126bd0660fd0503673a5e762658"
+    },
+    {
+      "filename": "printer.md",
+      "sha256": "d51f2e353761d0c91b0b3c26dd36e1b7e2658f9dccf2a7ef8410d7ae78353444"
+    },
+    {
+      "filename": "vacation.md",
+      "sha256": "2bc1089a7cbf0c448433be6fed4fd95b21fc74a70c883e9b3bed86238d323e95"
+    },
+    {
+      "filename": "vpn.md",
+      "sha256": "0ca5670e3c0fef6167a8728b8119a4a44566cb506cf0fdd50060a5f35174585d"
+    }
+  ]
+}

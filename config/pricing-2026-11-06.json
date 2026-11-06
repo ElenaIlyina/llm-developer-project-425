@@ -1,0 +1,23 @@
+{
+  "checked_on": "2026-11-06",
+  "currency": "RUB",
+  "vat_included": true,
+  "model": "YandexGPT Pro 5",
+  "model_alias": "yandexgpt/latest",
+  "generation_input_per_1000": 1.2,
+  "generation_output_per_1000": 1.2,
+  "classifier_lite_per_started_1000": 0.1525,
+  "file_search_per_1000_calls": 300,
+  "index_per_rounded_gib_day": 10.6,
+  "secret_version_per_hour": 0.0274,
+  "functions_per_gib_hour": 6.48,
+  "functions_per_million_calls": 18.97,
+  "functions_free_gib_hours": 10,
+  "functions_free_calls": 1000000,
+  "sources": [
+    "https://aistudio.yandex.ru/ru/docs/ai-studio/pricing",
+    "https://aistudio.yandex.ru/ru/docs/ai-studio/concepts/generation/models",
+    "https://yandex.cloud/ru/docs/lockbox/pricing",
+    "https://yandex.cloud/ru/docs/functions/pricing"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "verification_method": "User-provided output of yc serverless function invoke ydb-tickets with action=list-my-tickets",
+  "ticket": {
+    "id": "8ec4719e-9b91-4632-aba1-79d67f7dfaab",
+    "status": "open",
+    "category": "docs",
+    "text": "Какова точная сумма компенсации за занятия скалолазанием?",
+    "created_at": "2026-11-05T21:25:46.629641Z"
+  }
+}

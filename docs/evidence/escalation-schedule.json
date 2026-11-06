@@ -1,0 +1,4 @@
+{
+  "cron_expression": "0 0 9 * * *",
+  "timezone": "Europe/Moscow"
+}

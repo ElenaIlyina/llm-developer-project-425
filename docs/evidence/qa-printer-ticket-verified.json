@@ -1,0 +1,28 @@
+{
+  "evidence_source": "User-provided output of scripts/check_ticket_record.py; summarized without quoted mail history",
+  "queried_ticket_id": "a26b4494-1713-488c-8791-464c9fb4279e",
+  "ticket_found": true,
+  "ticket": {
+    "id": "a26b4494-1713-488c-8791-464c9fb4279e",
+    "status": "open",
+    "category": "bug",
+    "text": "Проблема с принтером: не печатает, проверить питание, бумагу и сообщение об ошибках. Кабинет и инвентарный номер принтера неизвестны.",
+    "created_at": "2026-11-05T22:45:38.306937Z",
+    "owner_matches_operator": true
+  },
+  "linked_messages": [
+    {
+      "id": "0dfae52e-63f7-5902-aa05-fd8d98bb577a",
+      "role": "agent",
+      "ticket_id": "a26b4494-1713-488c-8791-464c9fb4279e"
+    },
+    {
+      "id": "0b9c39d7-886f-51e5-81cd-e2372bac894b",
+      "role": "user",
+      "ticket_id": "a26b4494-1713-488c-8791-464c9fb4279e"
+    }
+  ],
+  "prior_question_message_id": "860fd402-5ecb-5994-a386-4a62bc31b0a8",
+  "prior_answer_message_id": "cbca1c74-2e77-5120-97f4-f27e7ba8dcfd",
+  "prior_answer_has_printer_source": true
+}

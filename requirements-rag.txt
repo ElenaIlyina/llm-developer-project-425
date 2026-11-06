@@ -1,0 +1,2 @@
+# Local index creation and verification; not needed in Cloud Function runtime.
+yandex-ai-studio-sdk==0.22.1
