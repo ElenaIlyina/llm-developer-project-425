@@ -4,7 +4,11 @@
 
 - [Ответ по базе знаний](qa-printer-answer-final.png): инструкция и документ printer.md.
 - [Подтверждение заявки](qa-printer-ticket-final.png): ID a26b4494-1713-488c-8791-464c9fb4279e.
+- [Прямое чтение YDB](qa-printer-ydb.png): ticket_found=true, open/bug, владелец совпадает; две реплики связаны с ID из письма.
 - `qa-printer-ticket-verified.json`: прямое чтение YDB подтвердило open/bug, владельца и связь двух реплик с тикетом.
+- [Учёт токенов API QA](qa-trace-usage.png): вход 907, выход 113, инструменты 1118, всего 2138; исходный usage первого ответа.
+- [Поисковый трейс API QA](qa-trace-search.png): file_search_call завершён, найден printer.md со score=1.0.
+- [MCP-трейс API QA](qa-trace-mcp.png): create-ticket, error=false и результат инструмента. Это отдельный синтетический QA-запуск; его тикет 6265437e-… удалён после проверки и отличается от финального почтового тикета.
 - `qa-live.json`: реальные inline-трейсы Responses API, RAG и MCP, четыре реплики, точное совпадение usage с YDB. Тестовые записи удалены.
 - `qa-token-report.json`: обезличенный экспорт YDB, токены и частичный месячный бюджет.
 
