@@ -24,6 +24,9 @@
 
 - [Успешный запуск workflow](escalation-success.png).
 - [Доставленный дайджест](escalation-email.png).
+- [Полученный дайджест четырёх заявок](escalation-digest-four-tickets.png): предоставлен пользователем 07.11.2026; включает финальный почтовый тикет a26b4494-…. Личный адрес получателя обрезан. Статусы всех четырёх заявок сверены чтением YDB: escalated.
+- [Статусы четырёх заявок в YDB](escalation-four-tickets-ydb.png): все ID из дайджеста имеют статус escalated; контакты в тексте тестового обращения замаскированы.
+- `escalation-four-tickets-verified.json`: фиксация предоставленного пользователем результата list-my-tickets; все ID из дайджеста имеют статус escalated.
 - `escalation-execution.json`, `escalation-digest.txt`: выполнение и текст дайджеста.
 - `escalation-ticket.json`: проверенный статус escalated.
 - `escalation-repeat.json`: повтор без повторной отправки.

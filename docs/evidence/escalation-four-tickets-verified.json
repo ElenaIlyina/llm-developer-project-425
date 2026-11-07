@@ -1,0 +1,23 @@
+{
+  "evidence_source": "Summary of user-provided ydb-tickets list-my-tickets output on 2026-11-07",
+  "digest_ticket_count": 4,
+  "all_digest_tickets_escalated": true,
+  "tickets": [
+    {
+      "id": "a26b4494-1713-488c-8791-464c9fb4279e",
+      "status": "escalated"
+    },
+    {
+      "id": "65868d9e-2a51-492d-afaa-cedfff85f34a",
+      "status": "escalated"
+    },
+    {
+      "id": "c7e55353-75ff-46ab-b991-831065ced57e",
+      "status": "escalated"
+    },
+    {
+      "id": "8ec4719e-9b91-4632-aba1-79d67f7dfaab",
+      "status": "escalated"
+    }
+  ]
+}
