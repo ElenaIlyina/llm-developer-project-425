@@ -1,0 +1,33 @@
+{
+  "scope_verifier_fixture": true,
+  "youtube_with_connectivity_document_supported": false,
+  "connectivity_with_connectivity_document_supported": true,
+  "verification_usage": {
+    "wrong_topic": {
+      "model": "gpt://b1gu1oe70uop37it489m/yandexgpt/latest",
+      "usage": {
+        "inputTextTokens": "225",
+        "completionTokens": "53",
+        "totalTokens": "278",
+        "completionTokensDetails": {
+          "reasoningTokens": "0"
+        }
+      }
+    },
+    "correct_topic": {
+      "model": "gpt://b1gu1oe70uop37it489m/yandexgpt/latest",
+      "usage": {
+        "inputTextTokens": "228",
+        "completionTokens": "41",
+        "totalTokens": "269",
+        "completionTokensDetails": {
+          "reasoningTokens": "0"
+        }
+      }
+    }
+  },
+  "real_rag_youtube_answer": "Не знаю: в базе знаний нет этой информации. Для уточнения информации рекомендую создать тикет.",
+  "real_rag_sources": [],
+  "no_smtp_or_ydb_writes": true,
+  "passed": true
+}

@@ -1,0 +1,12 @@
+{
+  "smtp_used": false,
+  "synthetic_fixture": true,
+  "ticket_path": "deployed MCP function",
+  "message_path": "local Store to real YDB",
+  "checks": {
+    "tickets": true,
+    "messages": true
+  },
+  "passed": true,
+  "synthetic_rows_removed": true
+}

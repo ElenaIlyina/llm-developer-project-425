@@ -17,12 +17,12 @@ import uuid
 
 try:
     from helpdesk_common import get_store, mask_pii
-    from rag import search_tool, search_trace, cited_sources, add_source_links
+    from rag import search_tool, search_trace, cited_sources, add_source_links, verify_support
     from guardrails import classify_text, regex_injection
     from mcp_client import call_create_ticket
 except ImportError:
     from src.helpdesk_common import get_store, mask_pii
-    from src.rag import search_tool, search_trace, cited_sources, add_source_links
+    from src.rag import search_tool, search_trace, cited_sources, add_source_links, verify_support
     from src.guardrails import classify_text, regex_injection
     from src.mcp_client import call_create_ticket
 from urllib.request import Request, urlopen
@@ -272,12 +272,26 @@ def agent_answer(text, token, user_id, history, request_id=None):
                   if ticket_id else
                   "Создание тикета не подтверждено: инструмент не вернул номер заявки. Попробуйте позже.")
     sources = cited_sources(response)
+    support_check = {}
+    if knowledge_request and sources:
+        question = (envelope.get("previous_user_question", "") + "\n" + current_text).strip()
+        support = verify_support(response, sources, question, answer, token, metrics=support_check)
+        support_check["status"] = "supported" if support is True else "unsupported" if support is False else "unavailable"
+        LOG.info("RAG_SUPPORT status=%s", "supported" if support is True else "unsupported" if support is False else "unavailable")
+        if support is not True:
+            sources = []
+            answer = ("Не знаю: в базе знаний нет этой информации. Хотите создать тикет для уточнения?"
+                      if support is False else
+                      "Не удалось подтвердить ответ по базе знаний. Попробуйте позже.")
     if not create_requested and not list_requested and not moderation_blocked:
         if not searches:
             answer = "Не удалось проверить базу знаний: поиск не выполнен. Попробуйте позже."
-        elif not sources and "не знаю" not in answer.casefold():
-            answer = ("Не удалось подготовить ответ с подтверждённым источником из базы знаний. "
-                      "Хотите создать тикет для уточнения?")
+        elif not sources and not support_check:
+            # Never publish an uncited draft, even if it contains "не знаю".
+            # Only code-generated fallback text may leave this branch.
+            answer = ("Не удалось проверить базу знаний: поиск не завершён. Попробуйте позже."
+                      if any(search.get("status") in ("failed", "incomplete", "in_progress") for search in searches)
+                      else "Не знаю: в базе знаний нет этой информации. Хотите создать тикет для уточнения?")
     LOG.info("RAG_SOURCES %s", json.dumps(sources, ensure_ascii=False))
     answer = mask_pii(add_source_links(answer, sources))
     usage = response.get("usage", {})
@@ -286,7 +300,7 @@ def agent_answer(text, token, user_id, history, request_id=None):
         "tokens_in": int(usage.get("input_tokens") or 0),
         "tokens_out": int(usage.get("output_tokens") or 0),
         "latency_ms": int((time.monotonic() - started) * 1000),
-        "searches": searches, "sources": sources, "client_calls": client_calls,
+        "searches": searches, "sources": sources, "client_calls": client_calls, "support_check": support_check,
     }
 
 
@@ -415,6 +429,7 @@ def handle(event, context):
         for uid in uids[:5]:
             if time.monotonic() - started > 20:
                 break
+            message, sender, notify = None, None, False
             try:
                 status, fetched = imap.uid("fetch", uid, "(BODY.PEEK[])")
                 if status != "OK":
@@ -426,6 +441,7 @@ def handle(event, context):
                 if skip_message(message, sender):
                     counts["skipped"] += 1
                 else:
+                    notify = True
                     if token is None:
                         token = get_token()
                     uid_validity = imap.response("UIDVALIDITY")[1]
@@ -437,6 +453,24 @@ def handle(event, context):
                 # Do not log mail contents, passwords, tokens or API error payloads.
                 LOG.error("MSG_FAILED uid=%s type=%s", uid.decode("ascii"), type(exc).__name__)
                 counts["failed"] += 1
+                if notify:
+                    reference = str(uuid.uuid5(uuid.NAMESPACE_URL,
+                        os.environ["HELPDESK_MAILBOX"] + ":failure:" + str(message.get("Message-ID", uid.decode("ascii")))))
+                    notice = ("Не удалось завершить обработку обращения из-за технического сбоя. "
+                              "Если вы просили создать заявку, проверьте список своих тикетов: "
+                              "действие могло выполниться до сбоя. Повторите обращение позже или "
+                              "передайте этот код поддержке: " + reference + ".")
+                    try:
+                        send_reply(message, sender, notice)
+                        LOG.info("FAILURE_NOTICE_SENT ref=%s", reference)
+                        try:
+                            get_store().save_message(reference, sender.casefold(), "agent", notice,
+                                                     model="system/error")
+                        except Exception as storage_error:
+                            LOG.error("FAILURE_NOTICE_STORAGE_FAILED ref=%s type=%s", reference,
+                                      type(storage_error).__name__)
+                    except Exception as delivery_error:
+                        LOG.error("FAILURE_NOTICE_FAILED ref=%s type=%s", reference, type(delivery_error).__name__)
             # Course MVP policy: failed messages are also marked read.
             mark_seen(imap, uid)
     return counts

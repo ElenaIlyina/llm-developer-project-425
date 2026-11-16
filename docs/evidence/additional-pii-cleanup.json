@@ -1,0 +1,16 @@
+{
+  "mode": "apply",
+  "tables": {
+    "tickets": {
+      "scanned": 7,
+      "needs_masking": 0,
+      "updated": 0
+    },
+    "messages": {
+      "scanned": 48,
+      "needs_masking": 2,
+      "updated": 2
+    }
+  },
+  "remaining_detectable_pii": 0
+}

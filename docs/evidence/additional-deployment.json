@@ -1,0 +1,22 @@
+{
+  "observed_at": "2026-11-16T21:21:50.450330+00:00",
+  "functions": {
+    "ydb-tickets": {
+      "version_id": "d4eeeojl8um39lot24e1",
+      "status": "ACTIVE"
+    },
+    "email-poller": {
+      "version_id": "d4eaf47kilcl389fsick",
+      "status": "ACTIVE"
+    }
+  },
+  "email_poller_trigger": {
+    "id": "a1se3ojh70uh54t6c83v",
+    "status": "ACTIVE"
+  },
+  "temporary_build_buckets_cleaned": true,
+  "local_tests_passed": 80,
+  "live_rag_and_qa_passed": true,
+  "new_pii_storage_check_passed": true,
+  "failure_notice_test": "unit tests with mocked SMTP; no live failure email"
+}

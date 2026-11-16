@@ -72,6 +72,12 @@ def main():
     run = str(uuid.uuid4())
     user = "qa-" + run[:8] + "@example.invalid"
     captured = []
+    support_checks = []
+    original_verify = poller.verify_support
+    def capture_verify(*args, **kwargs):
+        result = original_verify(*args, **kwargs)
+        support_checks.append({**copy.deepcopy(kwargs.get("metrics", {})), "supported": result})
+        return result
     client_calls = []
     actual_create_args = []
     original_create = poller.call_create_ticket
@@ -97,7 +103,7 @@ def main():
         archive.mkdir(parents=True, exist_ok=True)
         (archive / ("qa-live-" + prior["run_id"] + ".json")).write_text(previous.read_text())
     try:
-        with patch.object(poller, "request_json", side_effect=capture), patch.object(poller, "call_create_ticket", side_effect=capture_create), patch.object(poller, "send_reply") as send:
+        with patch.object(poller, "verify_support", side_effect=capture_verify), patch.object(poller, "request_json", side_effect=capture), patch.object(poller, "call_create_ticket", side_effect=capture_create), patch.object(poller, "send_reply") as send:
             for number, text in enumerate(("У меня сломался принтер, что делать?",
                                            "Не помогло, создай тикет категории bug по проблеме принтера.")):
                 source = "qa:" + run + ":" + str(number)
@@ -129,6 +135,7 @@ def main():
         second = report["turns"][1]
         assert any(x["type"] == "file_search_call" for x in first["trace"]["output"])
         assert "printer.md" in first["reply"], "Printer answer has no source"
+        report["support_checks"] = support_checks
         report["controller_mcp_calls"] = client_calls
         assert len(client_calls) == 1, "Expected exactly one controller MCP create-ticket call"
         tickets = store.list_tickets(user)

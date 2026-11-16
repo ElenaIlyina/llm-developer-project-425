@@ -81,7 +81,7 @@ class PollerTests(unittest.TestCase):
             poller, "get_token", return_value="fake-token"
         ), patch.object(
             poller, "process_message", side_effect=[ValueError("unavailable"), None]
-        ) as process:
+        ) as process, patch.object(poller, "send_reply"), patch.object(poller, "get_store"):
             connection.return_value.__enter__.return_value = imap
             result = poller.handle({}, None)
         self.assertEqual(result, {"processed": 1, "failed": 1, "skipped": 0})

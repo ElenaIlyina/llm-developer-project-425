@@ -10,9 +10,49 @@ CARD = re.compile(r"(?<![\w-])(?:\d[ -]?){12,18}\d(?![\w-])")
 PHONE = re.compile(r"(?<!\w)(?:\+?[78][\s().-]*)?(?:\d[\s().-]*){9}\d(?!\w)")
 TOKEN = re.compile(r"(?i)\b(password|пароль|token|токен|api[_-]?key)\s*[:=]\s*\S+")
 
+PASSPORT = re.compile(
+    r"(?P<label>\b(?:паспорт(?:а)?(?:\s+РФ)?|номер\s+паспорта)[\s:№=-]*)"
+    r"(?:серия\s*[:№]?\s*)?\d{2}[ -]?\d{2}\s*[,/-]?\s*(?:(?:номер|№)\s*)?\d{6}\b", re.I)
+BADGE = re.compile(
+    r"(?P<label>\b(?:номер\s+)?пропуск(?:а)?(?:\s*(?:№|номер|#|:|=))*\s*)"
+    r"(?=[A-ZА-ЯЁ0-9._/-]{0,39}\d)[A-ZА-ЯЁ0-9][A-ZА-ЯЁ0-9._/-]{0,39}\b", re.I)
+ADDRESS = re.compile(
+    r"(?P<label>(?<![\w-])адрес(?:\s+(?:проживания|регистрации|доставки))?(?:\s*[:=]\s*|\s+))"
+    r"(?P<value>[^\n;]+)", re.I)
+STREET_ADDRESS = re.compile(
+    r'\b(?i:ул\.?|улица|пр-т|проспект|пер\.?|переулок|шоссе|бульвар)\s*'
+    r'[А-ЯЁA-Z0-9][А-ЯЁа-яёA-Za-z0-9 «»".-]{0,80}?,?\s*'
+    r'(?i:д(?:ом)?\.?\s*)?\d+[А-ЯЁа-яёA-Za-z]?(?:[/-]\d+)?'
+    r'(?:,?\s*(?i:корп(?:ус)?|стр(?:оение)?|кв(?:артира)?)\.?\s*\d+){0,3}')
+
+
+def _mask_address(match):
+    value = match.group("value")
+    if value.startswith("[address]"):
+        return match.group()
+    # "Адрес" also means an email, URL or server address in IT questions.
+    # A generic label needs postal evidence; explicit residence labels do not.
+    explicit_postal = re.search(r"проживания|регистрации|доставки", match.group("label"), re.I)
+    postal_value = re.search(
+        r"\b(?:г\.|город\b|ул\.|улица\b|проспект\b|переулок\b|шоссе\b|бульвар\b)"
+        r"|,\s*(?:д(?:ом)?\.?\s*)?\d", value, re.I)
+    technical_value = re.search(r"https?://|\b(?:электронн\w*|сервера?|сайта?|почты|IP|URL)\b", value, re.I)
+    if not explicit_postal and (technical_value or not postal_value):
+        return match.group()
+    # Preserve the next contact field or a new sentence describing the problem.
+    boundary = re.search(
+        r"(?i)\b(?:телефон|email|e-mail|паспорт|номер\s+пропуска|пропуск|карта)\b"
+        r"|(?<=\d)\.\s+(?=[А-ЯЁA-Z])", value)
+    suffix = value[boundary.start():] if boundary else ""
+    return match.group("label") + "[address]" + (" " + suffix if suffix else "")
+
 
 def mask_pii(text):
     text = TOKEN.sub(lambda m: m.group(1) + "=[SECRET]", text)
+    text = PASSPORT.sub(lambda m: m.group("label") + "[passport]", text)
+    text = BADGE.sub(lambda m: m.group("label") + "[badge]", text)
+    text = ADDRESS.sub(_mask_address, text)
+    text = STREET_ADDRESS.sub("[address]", text)
     text = EMAIL.sub("[email]", text)
     text = CARD.sub("****-****-****-****", text)
     return PHONE.sub(lambda m: "+7 (***) ***-**-" + re.sub(r"\D", "", m.group())[-2:], text)

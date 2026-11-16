@@ -163,3 +163,31 @@ HTTP-вызов открыт для workflow — ограничение учеб
 
 Облачные стадии не обещают фиксированного времени установки: ожидание YDB,
 индекса и сборки функций зависит от платформы.
+
+## Обновление существующей установки
+
+Используйте существующие ресурсы и сохранённый `.env`. Сначала приостановите
+поллер, затем обновите функции и контракт MCP:
+
+```bash
+source .venv/bin/activate
+pip install -r requirements-dev.txt
+set -a
+source .env
+set +a
+yc serverless trigger pause email-poller-trigger
+bash scripts/deploy-ydb-tickets.sh
+yc serverless mcp-gateway update --name ydb-tickets-mcp \
+  --tools-file src/ydb_tickets/mcp-tools.yaml
+bash scripts/deploy-email-poller.sh
+```
+
+Проверьте ID функции в mcp-tools.yaml перед обновлением шлюза. При ошибке
+оставьте таймер на паузе. После успешных проверок из [qa.md](qa.md) включите опрос:
+
+```bash
+yc serverless trigger resume email-poller-trigger
+yc serverless trigger get email-poller-trigger
+```
+
+Workflow обновляется отдельно командой `bash scripts/deploy-escalation.sh`.

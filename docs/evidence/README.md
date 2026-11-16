@@ -1,67 +1,58 @@
 # Подтверждения проверок
 
-## Почтовые проверки после исправлений ревью
+## Почтовый канал и тикеты
 
-| Сценарий | Скрин | Проверка данных |
+| Сценарий | Письмо | Проверка данных |
 | --- | --- | --- |
-| Опасная просьба → отказ без предложения заявки | [Отказ](review-dangerous-request-email.png) | Автоматическая регрессия в review-security-regressions.json |
-| «Да» после опасной просьбы → отказ | [Повторный отказ](review-dangerous-consent-email.png) | Регрессия включает намеренно подставленное старое опасное предложение |
-| Вопрос про принтер → инструкция и источник printer.md | [Ответ из базы](review-printer-rag-email.png) | review-rag-context.json: поиск с пустой и доступной историей |
-| Явная просьба → один тикет | [Подтверждение](review-printer-ticket-email.png) | review-printer-ticket-verified.json: open/bug, владелец, две связанные реплики; одна заявка в окне ±2 минуты |
-| Благодарность с цитатой → ответ без действия | [Благодарность](review-quoted-thanks-email.png) | review-quoted-thanks-verified.json: текст без цитаты, ticket_id=null, новых заявок в цикле нет |
+| Опасная просьба → отказ | [Ответ](review-dangerous-request-email.png) | [Регрессии](review-security-regressions.json) |
+| Согласие на опасную просьбу → отказ | [Ответ](review-dangerous-consent-email.png) | Регрессия с подставленным опасным предложением |
+| Принтер → инструкция с источником | [Ответ](review-printer-rag-email.png) | [Поиск с историей](review-rag-context.json) |
+| Явная просьба → один тикет | [Ответ](review-printer-ticket-email.png) | [Тикет и две связанные реплики](review-printer-ticket-verified.json) |
+| Благодарность с цитатой → ответ без действия | [Ответ](review-quoted-thanks-email.png) | [Переписка и отсутствие новой заявки](review-quoted-thanks-verified.json) |
 
-Новые почтовые материалы получены 16.11.2026. ID проверенного тикета:
-5e9db75c-46d4-5ce3-923a-452905c3b57f. Ограничения области проверки указаны
-в соответствующих JSON; скрин сам по себе не доказывает запись в YDB.
+Почтовые снимки таблицы получены 16.11.2026. Область проверки указана в JSON;
+скрин ответа сам по себе не подтверждает запись или отсутствие тикета в YDB.
 
-## Актуальные автоматические проверки
+## RAG и API
 
-- `qa-live.json`: настоящий output[] модели, корневой usage, сравнение с YDB,
-  четыре реплики и две связи. controller_mcp_calls содержит отдельно выполненный
-  MCP-вызов; повтор request_id проверен без второго тикета. SMTP подменён,
-  случайные тестовые строки удалены.
-- `review-security-regressions.json`: отказ на приказ и согласие, команда в
-  Gmail-цитате без создания, блокировка реального прямого MCP. Для старого опасного
-  предложения явно используется fixture; SMTP подменён, YDB очищена от тестовых строк.
-- `review-rag-context.json`: поиск printer.md с пустой и текущей историей,
-  без отправки писем и записи в YDB.
-- `review-deployment.json`: версии развёрнутых компонентов и состояние таймера.
+- [Индекс](rag-index.json): состав и хеши восьми учебных документов.
+- [RAG](rag-checks.json): вопрос из базы и неизвестная сумма компенсации.
+  Почта: [известный вопрос](rag-known-email.png), [неизвестный](rag-unknown-email.png),
+  [согласие](rag-ticket-email.png), [запись тикета](rag-ticket.json).
+- [Соответствие вопросу](additional-rag-scope-check.json): проверяющая модель с
+  явно обозначенной фикстурой VPN и полный запрос про YouTube; без писем и записей.
+- [Полный QA](qa-live.json): output[] Responses API, usage и сверка с YDB,
+  четыре реплики, две связи и идемпотентный повтор. Контроллерный MCP-вызов
+  записан отдельно от предложения модели. SMTP подменён; тестовые строки удалены.
+- [Трейс поиска](qa-trace-search.png), [MCP](qa-trace-mcp.png),
+  [usage](qa-trace-usage.png): снимки запуска 05.11.2026, отдельного от qa-live.json.
 
-## RAG, согласие и маскирование
+## Защита и маскирование
 
-- `rag-index.json`: состав индекса, хеши восьми учебных документов.
-- `rag-checks.json`: реальные API-проверки вопроса из базы и вопроса вне базы.
-- [Командировка](rag-known-email.png), [нет информации](rag-unknown-email.png),
-  [согласие на заявку](rag-ticket-email.png); `rag-ticket.json` — чтение тикета.
-- `guardrail-checks.json`, `guardrail-injection.json`: классификатор и блокировка.
-- `pii-storage-check.json`: маски в tickets/messages, включая прямую запись;
-  [почтовой тест PII](pii-ticket-email.png).
-- `logging-unavailable.json`: предоставленное пользователем сообщение UI об
-  ограниченном режиме платформы. Облачные логи на отсутствие PII не проверены.
+- [Классификатор](guardrail-checks.json), [блокировка](guardrail-injection.json).
+- [Маски хранения](pii-storage-check.json), [почтовой тест](pii-ticket-email.png).
+- [Паспорт, пропуск и адрес](additional-pii-storage-check.json): развёрнутый MCP
+  и локальный Store с реальной YDB; синтетические строки удалены.
+- [Очистка текстов](additional-pii-cleanup.json): только количества, без исходных PII.
+- [Ограничение Cloud Logging](logging-unavailable.json): сообщение UI.
+  Облачные логи на отсутствие PII не проверены.
+
+Уведомления об ошибках проверены unit-тестами с подменённым SMTP;
+аварийная отправка из облака отдельно не воспроизводилась.
 
 ## Эскалация
 
 - [Успешный workflow](escalation-success.png), [письмо](escalation-email.png).
-- [Дайджест четырёх заявок](escalation-digest-four-tickets.png) и
-  [статусы escalated в YDB](escalation-four-tickets-ydb.png).
-- `escalation-execution.json`, `escalation-digest.txt`, `escalation-ticket.json`:
-  выполнение, текст и проверенный статус.
-- `escalation-repeat.json`: повтор без повторной отправки;
-  `escalation-schedule.json`: расписание 09:00 Europe/Moscow.
-- `escalation-four-tickets-verified.json`: сверка четырёх ID с дайджестом.
+- [Дайджест четырёх заявок](escalation-digest-four-tickets.png),
+  [статусы escalated](escalation-four-tickets-ydb.png),
+  [сверка ID](escalation-four-tickets-verified.json).
+- [Выполнение](escalation-execution.json), [текст](escalation-digest.txt),
+  [тикет](escalation-ticket.json), [повтор](escalation-repeat.json),
+  [расписание](escalation-schedule.json).
 
-## Первоначальные снимки для сопоставления
+## Конфигурация и стоимость
 
-Материалы 5–7 ноября относятся к предыдущей версии; не являются новыми прогонами:
-
-- [Ответ](qa-printer-answer-final.png), [тикет](qa-printer-ticket-final.png),
-  [YDB](qa-printer-ydb.png); `qa-printer-ticket-verified.json`.
-- [Поиск](qa-trace-search.png), [MCP](qa-trace-mcp.png), [usage](qa-trace-usage.png).
-  ID этих трейсов отличаются от текущего qa-live.json. Их синтетические тикеты удалены.
-- `guardrail-deployment.json`: первоначальное развёртывание защиты.
-- `qa-token-report.json`: обезличенный исторический экспорт и частичный бюджет
-  по тарифам 06.11.2026; не полный и не текущий счёт.
-
-Скриншоты предоставлены пользователем и просмотрены. Личные адреса и баланс
-не публикуются. Промежуточные неуспешные прогоны и рабочие заметки вынесены
-за пределы репозитория; подлинные результаты не переписываются под новый код.
+- [Развёртывание](additional-deployment.json): версии функций и состояние таймера
+  на момент проверки; актуальное состояние запрашивается через yc.
+- [Токены и частичный бюджет](qa-token-report.json): обезличенная выборка и расчёт
+  по тарифам 06.11.2026. Допущения и исключённые расходы — в [qa.md](../qa.md).

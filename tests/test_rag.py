@@ -41,7 +41,7 @@ class RagTests(unittest.TestCase):
                              {"type": "file_citation", "filename": "unknown.md"},
                              {"type": "file_citation", "filename": "account-access.md"}]}]},
         ], "usage": {"input_tokens": 100, "output_tokens": 40}}
-        with patch.object(email_poller, "request_json", return_value=data) as request:
+        with patch.object(email_poller, "request_json", return_value=data) as request, patch.object(email_poller, "verify_support", return_value=True):
             result = email_poller.agent_answer("Как оформить командировку?", "fake", "test@example.org", [])
         tools = request.call_args.kwargs["data"]["tools"]
         self.assertEqual(sum(t["type"] == "file_search" for t in tools), 1)

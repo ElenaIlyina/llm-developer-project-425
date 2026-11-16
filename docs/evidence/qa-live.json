@@ -1,15 +1,15 @@
 {
-  "run_id": "23c9bdd9-f867-41b8-b266-bed88f994955",
+  "run_id": "49016060-2e37-49dd-af16-708977e50e9b",
   "smtp_mocked": true,
   "turns": [
     {
       "question": "У меня сломался принтер, что делать?",
-      "message_id": "20b7f2e7-8f8b-55dc-b6bd-c661cf111985",
-      "reply": "По учебному регламенту выполните следующие шаги: проверьте питание, бумагу и отсутствие сообщения о замятии. Убедитесь, что выбран нужный принтер. Отмените зависшее задание в своей очереди и отправьте одну тестовую страницу. Если проблема сохраняется, создайте заявку категории bug с указанием кабинета, инвентарного номера принтера и текста ошибки. Не разбирайте устройство. При запахе гари или повреждении кабеля прекратите использование и сообщите администратору.\n\nДокумент: printer.md\n\nИсточники (учебная база):\nПринтеры — учебная инструкция — https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/printer.md",
+      "message_id": "ca134c13-fc2f-57e1-b48d-dd8cc10043bb",
+      "reply": "По учебному регламенту проверьте питание, бумагу и отсутствие сообщения о замятии. Убедитесь, что выбран нужный принтер. Отмените зависшее задание в своей очереди и отправьте одну тестовую страницу.\n\nЕсли проблема сохраняется, создайте заявку категории bug с информацией о кабинете, инвентарном номере принтера и текстом ошибки. Не разбирайте устройство. При запахе гари или повреждении кабеля прекратите использование и сообщите администратору.\n\nДокумент: printer.md\n\nИсточники (учебная база):\nПринтеры — учебная инструкция — https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/printer.md",
       "stored": {
-        "tokens_in": 896,
-        "tokens_out": 109,
-        "latency_ms": 2281
+        "tokens_in": 968,
+        "tokens_out": 108,
+        "latency_ms": 4941
       },
       "usage_comparison": {
         "input_matches": true,
@@ -19,24 +19,24 @@
         "latency_recorded": true
       },
       "trace": {
-        "response_id": "954bf021-e751-4d0f-b935-246297ef37b7",
+        "response_id": "67b6451b-612a-41e6-ab8c-9cbd841ffedc",
         "model": "gpt://b1gu1oe70uop37it489m/yandexgpt/latest",
         "usage": {
-          "input_tokens": 896,
+          "input_tokens": 968,
           "input_tokens_details": {
-            "cached_tokens": 832,
-            "tool_tokens": 1107
+            "cached_tokens": 896,
+            "tool_tokens": 1179
           },
-          "output_tokens": 109,
+          "output_tokens": 108,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 2112
+          "total_tokens": 2255
         },
         "output": [
           {
             "type": "file_search_call",
-            "id": "c0eb28e5-6e0e-46dd-8bc7-76e8ac60f0ca",
+            "id": "cfaf236a-f9ea-4c79-9de2-d14fecebe5ad",
             "status": "completed",
             "queries": [
               "Что делать, если сломался принтер?"
@@ -51,7 +51,7 @@
           },
           {
             "type": "message",
-            "id": "fccb227d-7449-44e9-b9b1-79712676b1b2",
+            "id": "48dfa24c-10f6-423d-8d90-7fe375497b20",
             "content": [
               {
                 "annotations": [
@@ -62,7 +62,7 @@
                     "type": "file_citation"
                   }
                 ],
-                "text": "По учебному регламенту выполните следующие шаги: проверьте питание, бумагу и отсутствие сообщения о замятии. Убедитесь, что выбран нужный принтер. Отмените зависшее задание в своей очереди и отправьте одну тестовую страницу. Если проблема сохраняется, создайте заявку категории bug с указанием кабинета, инвентарного номера принтера и текста ошибки. Не разбирайте устройство. При запахе гари или повреждении кабеля прекратите использование и сообщите администратору.\n\nДокумент: printer.md",
+                "text": "По учебному регламенту проверьте питание, бумагу и отсутствие сообщения о замятии. Убедитесь, что выбран нужный принтер. Отмените зависшее задание в своей очереди и отправьте одну тестовую страницу.\n\nЕсли проблема сохраняется, создайте заявку категории bug с информацией о кабинете, инвентарном номере принтера и текстом ошибки. Не разбирайте устройство. При запахе гари или повреждении кабеля прекратите использование и сообщите администратору.\n\nДокумент: printer.md",
                 "type": "output_text"
               }
             ]
@@ -72,12 +72,12 @@
     },
     {
       "question": "Не помогло, создай тикет категории bug по проблеме принтера.",
-      "message_id": "2640315a-6de5-5e47-9b61-ef763d78b4f0",
-      "reply": "Тикет с идентификатором e85d619b-84a1-5a4d-abdf-ab524b30a4be успешно создан.",
+      "message_id": "0b9d8ef1-67e4-5342-b246-77da0e3cf5d0",
+      "reply": "Тикет с идентификатором 9c263d70-788d-5153-9b5c-e12902ecbb33 успешно создан.",
       "stored": {
-        "tokens_in": 1106,
-        "tokens_out": 64,
-        "latency_ms": 6926
+        "tokens_in": 1178,
+        "tokens_out": 90,
+        "latency_ms": 9014
       },
       "usage_comparison": {
         "input_matches": true,
@@ -87,38 +87,38 @@
         "latency_recorded": true
       },
       "trace": {
-        "response_id": "50896950-6765-43e1-ace2-9860c7e369e1",
+        "response_id": "f6264250-5d2e-46ae-9ca4-8aa57b431838",
         "model": "gpt://b1gu1oe70uop37it489m/yandexgpt/latest",
         "usage": {
-          "input_tokens": 1106,
+          "input_tokens": 1178,
           "input_tokens_details": {
             "cached_tokens": 0,
             "tool_tokens": 0
           },
-          "output_tokens": 64,
+          "output_tokens": 90,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 1170
+          "total_tokens": 1268
         },
         "output": [
           {
             "type": "mcp_list_tools",
-            "id": "c6860d79-5398-4816-bb3d-9c792e081d8c",
+            "id": "0a47f4dd-946f-419c-b081-e2bd0fab5fa6",
             "tool_names": [
               "create-ticket"
             ]
           },
           {
             "type": "mcp_approval_request",
-            "id": "000_e1d0fd4d-d308-4565-a566-e0cf8aaaf1cc",
+            "id": "000_e16484ab-61f0-490c-ac0c-f32bbf19d149",
             "name": "create-ticket",
             "server_label": "ydb-tickets",
             "error": false,
             "arguments": {
               "category": "bug",
-              "request_id": "c9bdd9-ticket",
-              "text": "Проблема с принтером, кабинет и инвентарный номер не указаны. Текст ошибки неизвестен.",
+              "request_id": "e5c78d9f-d1e5-477f-908a-2a6f7b63c764",
+              "text": "Проблема с принтером: не помогло решение из инструкции.",
               "user_id": "[email]"
             },
             "output": null
@@ -128,6 +128,20 @@
     }
   ],
   "passed": true,
+  "support_checks": [
+    {
+      "model": "gpt://b1gu1oe70uop37it489m/yandexgpt/latest",
+      "usage": {
+        "inputTextTokens": "457",
+        "completionTokens": "84",
+        "totalTokens": "541",
+        "completionTokensDetails": {
+          "reasoningTokens": "0"
+        }
+      },
+      "supported": true
+    }
+  ],
   "controller_mcp_calls": [
     {
       "type": "controller_mcp_call",
@@ -135,14 +149,14 @@
       "arguments": {
         "user_id": "[email]",
         "category": "bug",
-        "text": "Проблема с принтером, кабинет и инвентарный номер не указаны. Текст ошибки неизвестен.",
-        "request_id": "09922aad-a552-55ca-9b80-424072113046"
+        "text": "Проблема с принтером: не помогло решение из инструкции.",
+        "request_id": "ec82e408-5bbd-5f71-b808-43cdaa631cb7"
       },
       "output": {
         "content": [
           {
             "type": "text",
-            "text": "{\"ticket_id\": \"e85d619b-84a1-5a4d-abdf-ab524b30a4be\", \"created_at\": \"2026-11-16T20:09:40.631838Z\"}"
+            "text": "{\"ticket_id\": \"9c263d70-788d-5153-9b5c-e12902ecbb33\", \"created_at\": \"2026-11-16T21:20:47.474293Z\"}"
           }
         ],
         "isError": false
@@ -151,15 +165,15 @@
   ],
   "idempotent_replay_passed": true,
   "ticket": {
-    "id": "e85d619b-84a1-5a4d-abdf-ab524b30a4be",
+    "id": "9c263d70-788d-5153-9b5c-e12902ecbb33",
     "status": "open",
     "category": "bug",
-    "text": "Проблема с принтером, кабинет и инвентарный номер не указаны. Текст ошибки неизвестен.",
-    "created_at": "2026-11-16T20:09:40.631838Z"
+    "text": "Проблема с принтером: не помогло решение из инструкции.",
+    "created_at": "2026-11-16T21:20:47.474293Z"
   },
   "messages": [
     {
-      "id": "4d300570-580e-5f11-b61b-b0988d97471f",
+      "id": "6de18c12-4894-5c90-8a1e-be1087f56d64",
       "role": "user",
       "ticket_id": null,
       "text": "У меня сломался принтер, что делать?",
@@ -167,40 +181,40 @@
       "tokens_in": 0,
       "tokens_out": 0,
       "latency_ms": 0,
-      "created_at": "2026-11-16T20:09:30.388078Z"
+      "created_at": "2026-11-16T21:20:31.843462Z"
     },
     {
-      "id": "20b7f2e7-8f8b-55dc-b6bd-c661cf111985",
+      "id": "ca134c13-fc2f-57e1-b48d-dd8cc10043bb",
       "role": "agent",
       "ticket_id": null,
-      "text": "По учебному регламенту выполните следующие шаги: проверьте питание, бумагу и отсутствие сообщения о замятии. Убедитесь, что выбран нужный принтер. Отмените зависшее задание в своей очереди и отправьте одну тестовую страницу. Если проблема сохраняется, создайте заявку категории bug с указанием кабинета, инвентарного номера принтера и текста ошибки. Не разбирайте устройство. При запахе гари или повреждении кабеля прекратите использование и сообщите администратору.\n\nДокумент: printer.md\n\nИсточники (учебная база):\nПринтеры — учебная инструкция — https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/printer.md",
+      "text": "По учебному регламенту проверьте питание, бумагу и отсутствие сообщения о замятии. Убедитесь, что выбран нужный принтер. Отмените зависшее задание в своей очереди и отправьте одну тестовую страницу.\n\nЕсли проблема сохраняется, создайте заявку категории bug с информацией о кабинете, инвентарном номере принтера и текстом ошибки. Не разбирайте устройство. При запахе гари или повреждении кабеля прекратите использование и сообщите администратору.\n\nДокумент: printer.md\n\nИсточники (учебная база):\nПринтеры — учебная инструкция — https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/printer.md",
       "model": "gpt://b1gu1oe70uop37it489m/yandexgpt/latest",
-      "tokens_in": 896,
-      "tokens_out": 109,
-      "latency_ms": 2281,
-      "created_at": "2026-11-16T20:09:33.300649Z"
+      "tokens_in": 968,
+      "tokens_out": 108,
+      "latency_ms": 4941,
+      "created_at": "2026-11-16T21:20:37.465133Z"
     },
     {
-      "id": "09922aad-a552-55ca-9b80-424072113046",
+      "id": "ec82e408-5bbd-5f71-b808-43cdaa631cb7",
       "role": "user",
-      "ticket_id": "e85d619b-84a1-5a4d-abdf-ab524b30a4be",
+      "ticket_id": "9c263d70-788d-5153-9b5c-e12902ecbb33",
       "text": "Не помогло, создай тикет категории bug по проблеме принтера.",
       "model": null,
       "tokens_in": 0,
       "tokens_out": 0,
       "latency_ms": 0,
-      "created_at": "2026-11-16T20:09:33.744963Z"
+      "created_at": "2026-11-16T21:20:38.131417Z"
     },
     {
-      "id": "2640315a-6de5-5e47-9b61-ef763d78b4f0",
+      "id": "0b9d8ef1-67e4-5342-b246-77da0e3cf5d0",
       "role": "agent",
-      "ticket_id": "e85d619b-84a1-5a4d-abdf-ab524b30a4be",
-      "text": "Тикет с идентификатором e85d619b-84a1-5a4d-abdf-ab524b30a4be успешно создан.",
+      "ticket_id": "9c263d70-788d-5153-9b5c-e12902ecbb33",
+      "text": "Тикет с идентификатором 9c263d70-788d-5153-9b5c-e12902ecbb33 успешно создан.",
       "model": "gpt://b1gu1oe70uop37it489m/yandexgpt/latest",
-      "tokens_in": 1106,
-      "tokens_out": 64,
-      "latency_ms": 6926,
-      "created_at": "2026-11-16T20:09:41.167923Z"
+      "tokens_in": 1178,
+      "tokens_out": 90,
+      "latency_ms": 9014,
+      "created_at": "2026-11-16T21:20:48.178356Z"
     }
   ],
   "synthetic_rows_removed": true
