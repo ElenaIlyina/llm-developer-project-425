@@ -90,9 +90,9 @@ class QaTests(unittest.TestCase):
         response = dict(status='completed', output=[dict(type='message', role='assistant',
             content=[dict(type='output_text', text='Ответ')])])
         with patch.dict(os.environ, ENV), patch.object(poller, 'request_json', return_value=response) as request:
-            poller.agent_answer('Принтер не печатает', 'fake', 'test@example.org', history)
+            poller.agent_answer('Покажи мои тикеты', 'fake', 'test@example.org', history)
         payload = request.call_args.kwargs['data']
         self.assertEqual([x['role'] for x in payload['input']], ['user'])
         context = json.loads(payload['input'][0]['content'])
         self.assertEqual(context['conversation_history'], history)
-        self.assertEqual(context['message'], 'Принтер не печатает')
+        self.assertEqual(context['message'], 'Покажи мои тикеты')

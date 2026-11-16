@@ -62,8 +62,8 @@ class PollerTests(unittest.TestCase):
             self.assertIn("поиск не выполнен", poller.agent_answer("Вопрос", "fake-token", "employee@example.org", [])["text"])
             self.assertEqual(request.call_args.kwargs["data"]["instructions"], "Instructions")
             self.assertNotIn("employee@example.org", request.call_args.kwargs["data"]["instructions"])
-            self.assertEqual(request.call_args.kwargs["data"]["tools"][0]["require_approval"], "never")
-            self.assertEqual(request.call_args.kwargs["data"]["tools"][0]["allowed_tools"], ["list-my-tickets"])
+            self.assertEqual(request.call_args.kwargs["data"]["tools"][0]["type"], "file_search")
+            self.assertFalse(any(t["type"] == "mcp" for t in request.call_args.kwargs["data"]["tools"]))
             self.assertNotIn("prompt", request.call_args.kwargs["data"])
 
     @patch.dict(os.environ, ENV)

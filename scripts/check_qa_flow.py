@@ -37,7 +37,7 @@ def response_trace(response):
         summary = {"type": kind, "id": item.get("id")}
         if kind == "file_search_call":
             summary.update(poller.search_trace(item, mask_pii))
-        elif kind == "mcp_call":
+        elif kind in ("mcp_call", "mcp_approval_request"):
             summary.update({"name": item.get("name"), "server_label": item.get("server_label"),
                             "error": bool(item.get("error"))})
             for field in ("arguments", "output"):
@@ -57,6 +57,14 @@ def response_trace(response):
             "usage": copy.deepcopy(response.get("usage", {})), "output": output}
 
 
+def failure_details(exc):
+    children = getattr(exc, "exceptions", ())
+    detail = {"type": type(exc).__name__, "detail": mask_pii(str(exc))[:1500]}
+    if children:
+        detail["causes"] = [failure_details(child) for child in children]
+    return detail
+
+
 def main():
     token = configure_cloud()
     os.environ["GUARDRAIL_FAIL_OPEN"] = "false"
@@ -64,6 +72,15 @@ def main():
     run = str(uuid.uuid4())
     user = "qa-" + run[:8] + "@example.invalid"
     captured = []
+    client_calls = []
+    actual_create_args = []
+    original_create = poller.call_create_ticket
+    def capture_create(arguments, token):
+        actual_create_args.append(copy.deepcopy(arguments))
+        output = original_create(arguments, token)
+        client_calls.append({"type": "controller_mcp_call", "name": "create-ticket",
+                             "arguments": redact(arguments), "output": redact(output)})
+        return output
     original_request = poller.request_json
     def capture(*args, **kwargs):
         response = original_request(*args, **kwargs)
@@ -76,9 +93,11 @@ def main():
     previous = evidence / "qa-live.json"
     if previous.exists():
         prior = json.loads(previous.read_text())
-        (evidence / ("qa-live-" + prior["run_id"] + ".json")).write_text(previous.read_text())
+        archive = ROOT.parent / "submission-archive" / "qa"
+        archive.mkdir(parents=True, exist_ok=True)
+        (archive / ("qa-live-" + prior["run_id"] + ".json")).write_text(previous.read_text())
     try:
-        with patch.object(poller, "request_json", side_effect=capture), patch.object(poller, "send_reply") as send:
+        with patch.object(poller, "request_json", side_effect=capture), patch.object(poller, "call_create_ticket", side_effect=capture_create), patch.object(poller, "send_reply") as send:
             for number, text in enumerate(("У меня сломался принтер, что делать?",
                                            "Не помогло, создай тикет категории bug по проблеме принтера.")):
                 source = "qa:" + run + ":" + str(number)
@@ -110,10 +129,18 @@ def main():
         second = report["turns"][1]
         assert any(x["type"] == "file_search_call" for x in first["trace"]["output"])
         assert "printer.md" in first["reply"], "Printer answer has no source"
-        assert any(x["type"] == "mcp_call" and x.get("name") == "create-ticket"
-                   for x in second["trace"]["output"]), "No create-ticket call"
+        report["controller_mcp_calls"] = client_calls
+        assert len(client_calls) == 1, "Expected exactly one controller MCP create-ticket call"
         tickets = store.list_tickets(user)
         assert len(tickets) == 1 and tickets[0]["category"] == "bug"
+        expected_id = str(uuid.uuid5(uuid.NAMESPACE_URL, user + ":" + client_calls[0]["arguments"]["request_id"]))
+        assert tickets[0]["id"] == expected_id, "Deploy idempotent ydb-tickets before running QA"
+        # Replay the identical email operation; it must return the same existing row.
+        replay = original_create(actual_create_args[0], token)
+        replay_id = poller.parse_tool_output(replay)
+        assert replay_id == tickets[0]["id"], "Repeated request created a different ticket"
+        assert len(store.list_tickets(user)) == 1, "Duplicate ticket after replay"
+        report["idempotent_replay_passed"] = True
         report["ticket"] = redact(tickets[0])
         messages = store.execute("""
             DECLARE $user AS Utf8;
@@ -129,7 +156,7 @@ def main():
         assert sum(r.ticket_id == tickets[0]["id"] for r in messages) == 2
         report["passed"] = True
     except Exception as exc:
-        report["failure"] = {"type": type(exc).__name__, "detail": mask_pii(str(exc))}
+        report["failure"] = failure_details(exc)
         raise
     finally:
         # This random synthetic user belongs only to this run. Real users are untouched.

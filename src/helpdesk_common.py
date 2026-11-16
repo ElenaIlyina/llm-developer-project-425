@@ -48,7 +48,10 @@ class Store:
             )
         return self.pool.retry_operation_sync(operation)
 
-    def create_ticket(self, user_id, category, text):
+    def create_ticket(self, user_id, category, text, request_id=None):
+        if request_id:
+            ticket_id = str(uuid.uuid5(uuid.NAMESPACE_URL, user_id + ":" + request_id))
+            return self._create_ticket_once(ticket_id, user_id, category, text)
         ticket_id = str(uuid.uuid4())
         now = time.time_ns() // 1000
         self.execute("""
@@ -62,6 +65,36 @@ class Store:
         """, {"$id": ticket_id, "$user": user_id, "$category": category,
               "$text": mask_pii(text), "$now": now})
         return {"ticket_id": ticket_id, "created_at": timestamp_text(now)}
+
+    def _create_ticket_once(self, ticket_id, user_id, category, text):
+        # Read and insert share one serializable transaction. A conflicting concurrent
+        # delivery is retried by the pool and then reads the already committed row.
+        now = time.time_ns() // 1000
+        settings = self.ydb.BaseRequestSettings().with_timeout(8)
+        def operation(session):
+            lookup = session.prepare("""
+                DECLARE $id AS Utf8;
+                SELECT id, created_at FROM tickets WHERE id = $id;
+            """)
+            with session.transaction(self.ydb.SerializableReadWrite()) as tx:
+                rows = tx.execute(lookup, {"$id": ticket_id}, settings=settings)[0].rows
+                if rows:
+                    tx.commit()
+                    return {"ticket_id": rows[0].id, "created_at": timestamp_text(rows[0].created_at)}
+                insert = session.prepare("""
+                    DECLARE $id AS Utf8;
+                    DECLARE $user AS Utf8;
+                    DECLARE $category AS Utf8;
+                    DECLARE $text AS Utf8;
+                    DECLARE $now AS Timestamp;
+                    INSERT INTO tickets (id, user_id, category, status, text, created_at, updated_at)
+                    VALUES ($id, $user, $category, "open", $text, $now, $now);
+                """)
+                tx.execute(insert, {"$id": ticket_id, "$user": user_id, "$category": category,
+                                    "$text": mask_pii(text), "$now": now},
+                           commit_tx=True, settings=settings)
+                return {"ticket_id": ticket_id, "created_at": timestamp_text(now)}
+        return self.pool.retry_operation_sync(operation)
 
     def list_tickets(self, user_id):
         results = self.execute("""

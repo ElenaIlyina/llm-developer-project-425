@@ -1,0 +1,171 @@
+{
+  "smtp_used": false,
+  "ydb_writes": false,
+  "cases": [
+    {
+      "name": "empty_history",
+      "history_available": 0,
+      "reply": "По учебному регламенту, если принтер не печатает, выполните следующие действия:\n\n1. Проверьте питание, наличие бумаги и отсутствие сообщения о замятии.\n2. Убедитесь, что выбран нужный принтер.\n3. Отмените зависшее задание в своей очереди и отправьте одну тестовую страницу.\n\nЕсли проблема сохраняется, создайте заявку категории bug с указанием кабинета, инвентарного номера принтера и текста ошибки. Не разбирайте устройство. При запахе гари или повреждении кабеля прекратите использование и сообщите администратору.\n\nДокумент: printer.md\n\nИсточники (учебная база):\nПринтеры — учебная инструкция — https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/printer.md",
+      "searches": [
+        {
+          "id": "4406a68d-e852-40ef-9574-5f753bac87aa",
+          "status": "completed",
+          "queries": [
+            "что делать, если сломался принтер"
+          ],
+          "results": [
+            {
+              "file_id": "fvtjtjigqco0hfu557ji",
+              "filename": "printer.md",
+              "score": 1.0
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "filename": "printer.md",
+          "file_id": "fvtjtjigqco0hfu557ji",
+          "title": "Принтеры — учебная инструкция",
+          "url": "https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/printer.md"
+        }
+      ],
+      "trace": [
+        {
+          "response_id": "1bdade1a-0fb2-4d8f-8d2a-e458c124e494",
+          "model": "gpt://b1gu1oe70uop37it489m/yandexgpt/latest",
+          "usage": {
+            "input_tokens": 893,
+            "input_tokens_details": {
+              "cached_tokens": 96,
+              "tool_tokens": 1102
+            },
+            "output_tokens": 128,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 2123
+          },
+          "output": [
+            {
+              "type": "file_search_call",
+              "id": "4406a68d-e852-40ef-9574-5f753bac87aa",
+              "status": "completed",
+              "queries": [
+                "что делать, если сломался принтер"
+              ],
+              "results": [
+                {
+                  "file_id": "fvtjtjigqco0hfu557ji",
+                  "filename": "printer.md",
+                  "score": 1.0
+                }
+              ]
+            },
+            {
+              "type": "message",
+              "id": "8a648861-2143-46ba-83c6-84d41a27aaef",
+              "content": [
+                {
+                  "annotations": [
+                    {
+                      "file_id": "fvtjtjigqco0hfu557ji",
+                      "filename": "printer.md",
+                      "index": 0,
+                      "type": "file_citation"
+                    }
+                  ],
+                  "text": "По учебному регламенту, если принтер не печатает, выполните следующие действия:\n\n1. Проверьте питание, наличие бумаги и отсутствие сообщения о замятии.\n2. Убедитесь, что выбран нужный принтер.\n3. Отмените зависшее задание в своей очереди и отправьте одну тестовую страницу.\n\nЕсли проблема сохраняется, создайте заявку категории bug с указанием кабинета, инвентарного номера принтера и текста ошибки. Не разбирайте устройство. При запахе гари или повреждении кабеля прекратите использование и сообщите администратору.\n\nДокумент: printer.md",
+                  "type": "output_text"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "stored_history",
+      "history_available": 10,
+      "reply": "По учебному регламенту проверьте питание, бумагу и отсутствие сообщения о замятии. Убедитесь, что выбран нужный принтер. Отмените зависшее задание в своей очереди и отправьте одну тестовую страницу. Если проблема сохраняется, создайте заявку категории bug с информацией о кабинете, инвентарном номере принтера и текстом ошибки. Не разбирайте устройство. При запахе гари или повреждении кабеля прекратите использование и сообщите администратору.\n\nДокумент: printer.md\n\nИсточники (учебная база):\nПринтеры — учебная инструкция — https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/printer.md",
+      "searches": [
+        {
+          "id": "644687df-883d-4a21-a558-668408aea3b7",
+          "status": "completed",
+          "queries": [
+            "Что делать, если сломался принтер?"
+          ],
+          "results": [
+            {
+              "file_id": "fvtjtjigqco0hfu557ji",
+              "filename": "printer.md",
+              "score": 1.0
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "filename": "printer.md",
+          "file_id": "fvtjtjigqco0hfu557ji",
+          "title": "Принтеры — учебная инструкция",
+          "url": "https://github.com/ElenaIlyina/llm-developer-project-425/blob/main/knowledge-base/printer.md"
+        }
+      ],
+      "trace": [
+        {
+          "response_id": "d08139d5-4228-4b2b-94ec-a90b1d2d83ad",
+          "model": "gpt://b1gu1oe70uop37it489m/yandexgpt/latest",
+          "usage": {
+            "input_tokens": 893,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "tool_tokens": 1104
+            },
+            "output_tokens": 106,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 2103
+          },
+          "output": [
+            {
+              "type": "file_search_call",
+              "id": "644687df-883d-4a21-a558-668408aea3b7",
+              "status": "completed",
+              "queries": [
+                "Что делать, если сломался принтер?"
+              ],
+              "results": [
+                {
+                  "file_id": "fvtjtjigqco0hfu557ji",
+                  "filename": "printer.md",
+                  "score": 1.0
+                }
+              ]
+            },
+            {
+              "type": "message",
+              "id": "f665e2a8-39f9-41a4-bf8b-cfc174d86ecf",
+              "content": [
+                {
+                  "annotations": [
+                    {
+                      "file_id": "fvtjtjigqco0hfu557ji",
+                      "filename": "printer.md",
+                      "index": 0,
+                      "type": "file_citation"
+                    }
+                  ],
+                  "text": "По учебному регламенту проверьте питание, бумагу и отсутствие сообщения о замятии. Убедитесь, что выбран нужный принтер. Отмените зависшее задание в своей очереди и отправьте одну тестовую страницу. Если проблема сохраняется, создайте заявку категории bug с информацией о кабинете, инвентарном номере принтера и текстом ошибки. Не разбирайте устройство. При запахе гари или повреждении кабеля прекратите использование и сообщите администратору.\n\nДокумент: printer.md",
+                  "type": "output_text"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "passed": true
+}

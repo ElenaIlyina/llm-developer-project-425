@@ -2,6 +2,7 @@
 import base64
 import json
 import logging
+import uuid
 from email.utils import parseaddr
 
 try:
@@ -55,7 +56,12 @@ def handle(event, context):
                     return blocked
                 return {"statusCode": 422, "headers": {"Content-Type": "application/json"},
                         "body": json.dumps(blocked)}
-            result = get_store().create_ticket(user_id, category, text.strip())
+            request_id = args.get("request_id")
+            if request_id is not None:
+                request_id = str(uuid.UUID(request_id))
+                result = get_store().create_ticket(user_id, category, text.strip(), request_id=request_id)
+            else:
+                result = get_store().create_ticket(user_id, category, text.strip())
         else:
             result = get_store().list_tickets(user_id)
         LOG.info("ACTION_OK action=%s", action)

@@ -45,7 +45,7 @@ class RagTests(unittest.TestCase):
             result = email_poller.agent_answer("Как оформить командировку?", "fake", "test@example.org", [])
         tools = request.call_args.kwargs["data"]["tools"]
         self.assertEqual(sum(t["type"] == "file_search" for t in tools), 1)
-        self.assertEqual(sum(t["type"] == "mcp" for t in tools), 1)
+        self.assertEqual(sum(t["type"] == "mcp" for t in tools), 0)
         self.assertEqual(result["searches"][0]["queries"], ["командировка"])
         self.assertEqual(len(result["sources"]), 1)
         self.assertIn("/knowledge-base/business-travel.md", result["text"])

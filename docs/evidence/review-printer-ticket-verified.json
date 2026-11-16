@@ -1,0 +1,33 @@
+{
+  "evidence_source": "Direct read-only YDB verification on 2026-11-16",
+  "ticket": {
+    "id": "5e9db75c-46d4-5ce3-923a-452905c3b57f",
+    "status": "open",
+    "category": "bug",
+    "text": "Проблема с принтером, необходимы дополнительные действия для решения.",
+    "created_at": "2026-11-16T20:14:33.643729Z",
+    "owner_matches_operator": true
+  },
+  "linked_messages": [
+    {
+      "id": "5ee2616b-c11c-5212-870e-cba15fc0b362",
+      "role": "agent",
+      "ticket_id": "5e9db75c-46d4-5ce3-923a-452905c3b57f",
+      "text": "Тикет с идентификатором 5e9db75c-46d4-5ce3-923a-452905c3b57f успешно создан."
+    },
+    {
+      "id": "d8513d12-45ff-5b06-a3f2-6d5666334b76",
+      "role": "user",
+      "ticket_id": "5e9db75c-46d4-5ce3-923a-452905c3b57f",
+      "text": "Не помогло, создай тикет категории bug."
+    }
+  ],
+  "deterministic_id_matches_incoming_message": true,
+  "duplicate_check": {
+    "scope": "Same owner, two minutes before and after ticket creation",
+    "ticket_count": 1,
+    "ids": [
+      "5e9db75c-46d4-5ce3-923a-452905c3b57f"
+    ]
+  }
+}

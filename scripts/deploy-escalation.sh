@@ -24,10 +24,17 @@ yc serverless function version create \
 # HTTPCall has no automatic IAM auth; the function accepts only the fixed recipient.
 yc serverless function allow-unauthenticated-invoke email-sender
 .venv/bin/python scripts/render_workflow.py
-# daily-escalation is created in this workspace; for a new installation use workflow create.
-yc serverless workflow update \
-  --name daily-escalation --yaml-spec src/workflow.yaml \
-  --service-account-id "$SA_ID" --log-folder-id "$FOLDER_ID"
+# Fail on listing errors instead of treating access/network failures as "not found".
+WORKFLOWS=$(yc serverless workflow list --format json)
+if jq -e 'any(.[]; .name == "daily-escalation")' <<< "$WORKFLOWS" >/dev/null; then
+  yc serverless workflow update \
+    --name daily-escalation --yaml-spec src/workflow.yaml \
+    --service-account-id "$SA_ID" --log-folder-id "$FOLDER_ID"
+else
+  yc serverless workflow create \
+    --name daily-escalation --yaml-spec src/workflow.yaml \
+    --service-account-id "$SA_ID" --log-folder-id "$FOLDER_ID"
+fi
 for ROLE in serverless.workflows.executor serverless.workflows.viewer; do
   yc serverless workflow add-access-binding \
     --name daily-escalation --role "$ROLE" --service-account-id "$SA_ID"

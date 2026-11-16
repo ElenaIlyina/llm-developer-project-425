@@ -13,19 +13,9 @@ cd "$(dirname "$0")/.."
 SA_ID=$(yc iam service-account get --name ai-studio-sa --format json | jq -er .id)
 FOLDER_ID=$(yc config get folder-id)
 ARCHIVE=$(mktemp /tmp/email-poller.XXXXXXXX.zip)
-trap 'rm -f "$ARCHIVE"' EXIT
-python3.12 - "$ARCHIVE" <<'PY'
-import sys
-import zipfile
-with zipfile.ZipFile(sys.argv[1], "w", zipfile.ZIP_DEFLATED) as archive:
-    archive.write("src/email_poller.py", "email_poller.py")
-    archive.write("src/helpdesk_common.py", "helpdesk_common.py")
-    archive.write("src/rag.py", "rag.py")
-    archive.write("src/guardrails.py", "guardrails.py")
-    archive.write("src/knowledge_sources.json", "knowledge_sources.json")
-    archive.write("src/requirements-poller.txt", "requirements.txt")
-    archive.write("prompts/help-desk-system.md", "help-desk-system.md")
-PY
+source scripts/function_package.sh
+trap cleanup_function_package EXIT
+prepare_function_package poller
 # Create the function once before running this script:
 # yc serverless function create --name email-poller
 yc serverless function version create \
@@ -34,7 +24,7 @@ yc serverless function version create \
   --entrypoint email_poller.handle \
   --memory 256m \
   --execution-timeout 120s \
-  --source-path "$ARCHIVE" \
+  "${PACKAGE_ARGS[@]}" \
   --service-account-id "$SA_ID" \
   --environment "YC_FOLDER_ID=$FOLDER_ID,IMAP_HOST=imap.yandex.ru,IMAP_USER=$HELPDESK_MAILBOX,SMTP_HOST=smtp.yandex.ru,SMTP_PORT=465,SMTP_USER=$HELPDESK_MAILBOX,HELPDESK_MAILBOX=$HELPDESK_MAILBOX,MCP_SERVER_URL=$MCP_SERVER_URL,SEARCH_INDEX_ID=$SEARCH_INDEX_ID,RAG_SCORE_THRESHOLD=${RAG_SCORE_THRESHOLD:-0.35},GUARDRAIL_FAIL_OPEN=${GUARDRAIL_FAIL_OPEN:-true}" \
   --secret "environment-variable=IMAP_PASSWORD,id=$EMAIL_CREDENTIALS_SECRET_ID,version-id=$EMAIL_CREDENTIALS_SECRET_VERSION_ID,key=password" \

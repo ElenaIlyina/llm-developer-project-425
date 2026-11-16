@@ -1,0 +1,48 @@
+{
+  "observed_at": "2026-11-11T16:54:04.143915+00:00",
+  "source": "Observed successful yc deployment outputs and live QA commands",
+  "functions": {
+    "ydb-tickets": {
+      "version_id": "d4ei3qflt2h5abff3bpb",
+      "status": "ACTIVE"
+    },
+    "email-poller": {
+      "version_id": "d4e4ur96pmb3kbm8cqou",
+      "status": "ACTIVE"
+    }
+  },
+  "mcp_gateway": {
+    "id": "db8fj6b05t8rq2h9k4cv",
+    "contract_updated": true
+  },
+  "api_qa_passed": true,
+  "security_regressions_passed": true,
+  "smtp_mocked_in_tests": true,
+  "temporary_build_buckets_cleaned": true,
+  "email_poller_trigger": {
+    "id": "a1se3ojh70uh54t6c83v",
+    "status": "ACTIVE"
+  },
+  "rag_isolation_update": {
+    "date": "2026-11-16",
+    "poller_version_id": "d4ec1ur6gqgtn3skieq5",
+    "poller_status": "ACTIVE",
+    "trigger_status": "ACTIVE",
+    "rag_with_stored_history_passed": true,
+    "api_qa_passed": true
+  },
+  "acknowledgement_update": {
+    "date": "2026-11-16",
+    "poller_version_id": "d4er0rchncm4ldu4galh",
+    "status": "ACTIVE",
+    "trigger_status": "ACTIVE",
+    "review_security_regressions_passed": true
+  },
+  "acknowledgement_wording_update": {
+    "date": "2026-11-16",
+    "poller_version_id": "d4euue7pm38luak1rt1c",
+    "status": "ACTIVE",
+    "trigger_status": "ACTIVE",
+    "reply": "Пожалуйста! Рад, что удалось помочь."
+  }
+}

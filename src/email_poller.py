@@ -18,11 +18,13 @@ import uuid
 try:
     from helpdesk_common import get_store, mask_pii
     from rag import search_tool, search_trace, cited_sources, add_source_links
-    from guardrails import classify_text
+    from guardrails import classify_text, regex_injection
+    from mcp_client import call_create_ticket
 except ImportError:
     from src.helpdesk_common import get_store, mask_pii
     from src.rag import search_tool, search_trace, cited_sources, add_source_links
-    from src.guardrails import classify_text
+    from src.guardrails import classify_text, regex_injection
+    from src.mcp_client import call_create_ticket
 from urllib.request import Request, urlopen
 
 LOG = logging.getLogger(__name__)
@@ -34,20 +36,53 @@ class TextHTML(HTMLParser):
         super().__init__()
         self.parts = []
         self.hidden = 0
+        self.quote_depth = 0
 
     def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        quote = tag == "blockquote" or any(marker in attrs.get("class", "").lower()
+            for marker in ("gmail_quote", "yahoo_quoted", "moz-cite-prefix")) or attrs.get("id", "").lower() == "divrplyfwdmsg"
+        if self.quote_depth or quote:
+            if tag not in ("br", "hr", "img", "meta", "input", "wbr"):
+                self.quote_depth += 1
+            return
         if tag in ("script", "style"):
             self.hidden += 1
         if tag in ("br", "p", "div", "li"):
             self.parts.append("\n")
 
     def handle_endtag(self, tag):
+        if self.quote_depth:
+            self.quote_depth -= 1
+            return
         if tag in ("script", "style"):
             self.hidden = max(0, self.hidden - 1)
 
     def handle_data(self, data):
-        if not self.hidden:
+        if not self.hidden and not self.quote_depth:
             self.parts.append(data)
+
+
+def authored_text(text):
+    """Keep the new top-posted message, never commands in quoted correspondence."""
+    markers = (
+        r"(?m)^\s*-{8,}\s*$",
+        r"(?m)^\s*>.*$",
+        r"(?im)^\s*On [\s\S]{0,500}?wrote:\s*$",
+        r"(?im)^\s*В[тс]?[ ,]+[\s\S]{0,300}?писал(?:а|и)?[(:]",
+        r"(?im)^\s*.*(?:написал|написала|пишет|писал|писала)(?:\([^)]*\))?:\s*$",
+        r"(?im)^\s*-{2,}\s*(?:Original Message|Пересылаемое сообщение|Исходное сообщение).*$",
+        r"(?im)^\s*(?:From|От|Отправитель):[^\n]*\n(?:[^\n]*\n){0,4}\s*(?:Sent|Date|Дата|Отправлено):",
+    )
+    cuts = [match.start() for pattern in markers if (match := re.search(pattern, text))]
+    return text[:min(cuts)].strip() if cuts else text.strip()
+
+
+def pending_issue(history):
+    """Only the user message immediately preceding the latest assistant offer."""
+    if len(history) >= 2 and history[-1].get("role") == "assistant" and history[-2].get("role") == "user":
+        return authored_text(history[-2].get("content", ""))
+    return ""
 
 
 def message_text(message):
@@ -59,7 +94,7 @@ def message_text(message):
         parser = TextHTML()
         parser.feed(text)
         text = "".join(parser.parts)
-    text = text.strip()
+    text = authored_text(text)
     if not text:
         raise ValueError("Empty message")
     return text[:12000]
@@ -90,6 +125,10 @@ def parse_tool_output(value):
     if isinstance(value, dict):
         if value.get("ticket_id"):
             return value["ticket_id"]
+        if value.get("structuredContent"):
+            ticket = parse_tool_output(value["structuredContent"])
+            if ticket:
+                return ticket
         for part in value.get("content", []):
             ticket = parse_tool_output(part.get("text", ""))
             if ticket:
@@ -99,7 +138,9 @@ def parse_tool_output(value):
 
 def ticket_creation_requested(text, history):
     """Conservative routing gate; ambiguous wording keeps creation unavailable."""
-    text = re.split(r"(?m)^\s*-{8,}\s*$", text, maxsplit=1)[0].casefold().strip()
+    text = authored_text(text).casefold()
+    if regex_injection(text) or regex_injection(pending_issue(history)):
+        return False
     if re.search(r"\b(?:не|нельзя|запрещено)\s+(?:созда|оформ|завод|завест|регистр)", text):
         return False
     if re.search(r"\b(?:создай|создайте|оформи|оформите|заведи|заведите|зарегистрируй)\b.{0,60}\b(?:тикет|заявк)", text):
@@ -113,36 +154,45 @@ def ticket_creation_requested(text, history):
     return False
 
 
-def agent_answer(text, token, user_id, history):
+def agent_answer(text, token, user_id, history, request_id=None):
     prompt_path = Path(__file__).with_name("help-desk-system.md")
     if not prompt_path.exists():
         prompt_path = Path(__file__).resolve().parents[1] / "prompts/help-desk-system.md"
     prompt = prompt_path.read_text(encoding="utf-8")
     model = os.environ.get("YC_MODEL", "gpt://" + os.environ["YC_FOLDER_ID"] + "/yandexgpt/latest")
     create_requested = ticket_creation_requested(text, history)
-    current_text = re.split(r"(?m)^\s*-{8,}\s*$", text, maxsplit=1)[0]
+    current_text = authored_text(text)
     list_requested = bool(re.search(r"(?:покажи|покажите|список|статус|мои).{0,40}(?:тикет|заявк)", current_text.casefold()))
     tool_choice = ({"type": "mcp", "server_label": "ydb-tickets", "name": "create-ticket"}
                    if create_requested else
                    {"type": "mcp", "server_label": "ydb-tickets", "name": "list-my-tickets"}
                    if list_requested else {"type": "file_search"})
+    knowledge_request = not create_requested and not list_requested
+    # Retrieval must not replay an old assistant answer or see unrelated MCP tools.
+    # Ticket workflows keep full history; standalone KB questions get a fresh search.
+    context_history = [] if knowledge_request else history
+    envelope = {"sender_email": user_id, "message": mask_pii(current_text),
+                "conversation_history": [
+                    {"role": item["role"], "content": mask_pii(item["content"])}
+                    for item in context_history]}
+    if knowledge_request and re.search(r"\b(?:это|этот|эта|его|её|тогда|подробнее)\b", current_text.casefold()):
+        previous_question = pending_issue(history)
+        if previous_question and not regex_injection(previous_question):
+            envelope["previous_user_question"] = mask_pii(previous_question)
+    mcp_tool = {
+        "type": "mcp", "server_label": "ydb-tickets",
+        "server_url": os.environ["MCP_SERVER_URL"],
+        "require_approval": "always" if create_requested else "never",
+        "allowed_tools": (["create-ticket"] if create_requested else ["list-my-tickets"]),
+    }
     payload = {
         "tool_choice": tool_choice,
         "model": model,
         "instructions": prompt,
-        "input": [{"role": "user", "content": json.dumps(
-            {"sender_email": user_id, "message": mask_pii(current_text),
-             "conversation_history": [
-                 {"role": item["role"], "content": mask_pii(item["content"])}
-                 for item in history]}, ensure_ascii=False)}],
+        "input": [{"role": "user", "content": json.dumps(envelope, ensure_ascii=False)}],
         "max_output_tokens": 1200,
         "store": False,
-        "tools": [{
-            "type": "mcp", "server_label": "ydb-tickets",
-            "server_url": os.environ["MCP_SERVER_URL"], "require_approval": "never",
-            "allowed_tools": (["list-my-tickets", "create-ticket"]
-                              if create_requested else ["list-my-tickets"]),
-        }, search_tool()],
+        "tools": [search_tool()] if knowledge_request else [mcp_tool],
     }
     LOG.info("REQUEST_PAYLOAD history_count=%d roles=%s",
              len(history), ",".join(item["role"] for item in payload["input"]))
@@ -155,7 +205,6 @@ def agent_answer(text, token, user_id, history):
                  "OpenAI-Project": os.environ["YC_FOLDER_ID"]},
         timeout=45,
     )
-    latency = int((time.monotonic() - started) * 1000)
     moderation_blocked = (response.get("status") == "incomplete" and
                           (response.get("incomplete_details") or {}).get("reason") == "content_filter")
     if moderation_blocked:
@@ -163,6 +212,8 @@ def agent_answer(text, token, user_id, history):
     elif response.get("status") not in (None, "completed"):
         raise ValueError("Incomplete agent response")
     ticket_id = None
+    proposals = []
+    client_calls = []
     searches = []
     for item in response.get("output", []):
         if item.get("type") == "file_search_call":
@@ -170,6 +221,9 @@ def agent_answer(text, token, user_id, history):
             searches.append(trace)
             LOG.info("file_search_call %s", json.dumps(trace, ensure_ascii=False))
         if item.get("type") == "mcp_approval_request":
+            if create_requested and item.get("name") == "create-ticket" and item.get("server_label") == "ydb-tickets":
+                proposals.append(item)
+                continue
             raise ValueError("Unexpected MCP approval request")
         if item.get("type") != "mcp_call":
             continue
@@ -177,9 +231,30 @@ def agent_answer(text, token, user_id, history):
         if item.get("error"):
             raise ValueError("MCP tool failed")
         if item.get("name") == "create-ticket":
-            candidate = parse_tool_output(item.get("output"))
-            if candidate:
-                ticket_id = str(uuid.UUID(candidate))
+            # Writes must be mediated locally; an automatic write is a protocol violation.
+            raise ValueError("Unexpected automatic create-ticket call")
+    if create_requested and proposals:
+        # Ignore subsequent proposals before any mutation: at most one write is executed.
+        args = proposals[0].get("arguments", {})
+        args = json.loads(args) if isinstance(args, str) else args
+        if not isinstance(args, dict):
+            raise ValueError("Invalid create-ticket proposal")
+        category, issue = args.get("category"), args.get("text")
+        if category not in ("bug", "docs", "feature", "access") or not isinstance(issue, str) or not 1 <= len(issue) <= 12000:
+            raise ValueError("Invalid create-ticket proposal")
+        if classify_text(issue, token=token) == "injection":
+            raise ValueError("Unsafe create-ticket proposal")
+        actual_args = {"user_id": user_id, "category": category, "text": mask_pii(issue),
+                       "request_id": request_id or str(uuid.uuid4())}
+        output = call_create_ticket(actual_args, token)
+        candidate = parse_tool_output(output)
+        if not candidate:
+            raise ValueError("Create-ticket returned no ticket ID")
+        ticket_id = str(uuid.UUID(candidate))
+        client_calls.append({"type": "controller_mcp_call", "name": "create-ticket",
+                             "arguments": {**actual_args, "user_id": "[email]"},
+                             "output": output})
+        LOG.info("MCP_CREATE_OK proposals=%d", len(proposals))
     answer = "\n".join(
         part["text"]
         for item in response.get("output", [])
@@ -189,7 +264,7 @@ def agent_answer(text, token, user_id, history):
     ).strip()
     if not answer and moderation_blocked:
         answer = "Не могу обработать это обращение: сработало правило модерации."
-    if not answer:
+    if not answer and not create_requested:
         raise ValueError("No agent response text")
     if create_requested:
         # A model-written UUID is never evidence of a completed action.
@@ -209,8 +284,9 @@ def agent_answer(text, token, user_id, history):
     return {
         "text": answer, "ticket_id": ticket_id, "model": model,
         "tokens_in": int(usage.get("input_tokens") or 0),
-        "tokens_out": int(usage.get("output_tokens") or 0), "latency_ms": latency,
-        "searches": searches, "sources": sources,
+        "tokens_out": int(usage.get("output_tokens") or 0),
+        "latency_ms": int((time.monotonic() - started) * 1000),
+        "searches": searches, "sources": sources, "client_calls": client_calls,
     }
 
 
@@ -263,9 +339,22 @@ def process_message(message, sender, token, source_id):
     user_message_id = str(uuid.uuid5(uuid.NAMESPACE_URL, source_id + ":user"))
     agent_message_id = str(uuid.uuid5(uuid.NAMESPACE_URL, source_id + ":agent"))
     store.save_message(user_message_id, user_id, "user", text)
-    label = classify_text(text, token=token)
-    if label == "safe":
-        result = agent_answer(text, token, user_id, history)
+    # Classify the referenced action first: a bare "yes" can itself be off-topic,
+    # but must still get an explicit refusal when it refers to a dangerous request.
+    issue = pending_issue(history)
+    consent = re.fullmatch(r"(?:да|согласен|согласна)[.! ]*", text.casefold().strip())
+    acknowledgement = re.fullmatch(
+        r"(?:спасибо|благодарю)(?:[,\s]+(?:помогло|вс[её]\s+работает))?[.! ]*",
+        text.casefold().strip(),
+    )
+    label = "acknowledgement" if acknowledgement else classify_text(
+        issue if consent and issue else text, token=token)
+    if label == "acknowledgement":
+        result = {"text": "Пожалуйста! Рад, что удалось помочь.", "ticket_id": None,
+                  "model": "dialogue/acknowledgement", "tokens_in": 0,
+                  "tokens_out": 0, "latency_ms": 0}
+    elif label == "safe":
+        result = agent_answer(text, token, user_id, history, request_id=user_message_id)
     else:
         reply = ("Не могу выполнить инструкции по обходу правил или неразрешённым действиям. "
                  "Опишите рабочую проблему — помогу в рамках Help Desk."

@@ -17,3 +17,6 @@ docs/evidence/logging-unavailable-original.png
 
 # Previous QA runs are local diagnostics; publish only qa-live.json.
 docs/evidence/qa-live-*.json
+
+# Locally downloaded deployment wheels
+.build/

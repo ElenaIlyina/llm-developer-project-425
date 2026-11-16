@@ -64,7 +64,8 @@ class HistoryTests(unittest.TestCase):
                               "model": "test-model", "tokens_in": 11,
                               "tokens_out": 12, "latency_ms": 123}
         poller.process_message(incoming(), "employee@example.org", "fake", "uid-1")
-        agent.assert_called_once_with("Привет", "fake", "employee@example.org", history)
+        agent.assert_called_once_with("Привет", "fake", "employee@example.org", history,
+                                      request_id=store.save_message.call_args_list[0].args[0])
         saves = store.save_message.call_args_list
         self.assertEqual([call.args[2] for call in saves], ["user", "agent"])
         self.assertEqual(saves[1].kwargs["tokens_in"], 11)

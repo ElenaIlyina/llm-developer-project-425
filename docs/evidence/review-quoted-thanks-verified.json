@@ -1,0 +1,22 @@
+{
+  "source": "Direct read-only YDB query",
+  "window_utc": "2026-11-16 20:25–20:29",
+  "new_ticket_count": 0,
+  "messages": [
+    {
+      "id": "92bb7fd9-813d-5ea3-9f3e-c5ae2bc036f2",
+      "role": "user",
+      "ticket_id": null,
+      "text": "Спасибо, помогло!",
+      "model": null
+    },
+    {
+      "id": "721c2562-3d03-52cd-8da1-789281a1e46f",
+      "role": "agent",
+      "ticket_id": null,
+      "text": "Пожалуйста! Рад, что удалось помочь.",
+      "model": "dialogue/acknowledgement"
+    }
+  ],
+  "passed": true
+}
